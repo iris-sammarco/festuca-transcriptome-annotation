@@ -47,20 +47,8 @@ echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
 
-## STEP 8: Trinotate INIT (load assembly + predictions)
-PEP_FINAL="Trinity.fasta.transdecoder.pep"
-if [[ ! -s "Trinotate.sqlite" || ! -s ".trinotate.init.done" ]]; then
-    echo "[INFO] Trinotate init..."
-    rm -f .trinotate.init.done
-    Trinotate Trinotate.sqlite init \
-        --gene_trans_map Trinity.fasta.gene_trans_map \
-        --transcript_fasta Trinity.fasta \
-        --transdecoder_pep "${PEP_FINAL}" \
-        > "${LOGDIR}/trinotate.init.log" 2>&1
-    touch .trinotate.init.done
-fi
-
 ## STEP 9: TMHMM - predict transmembrane domains
+PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s ".tmhmm.done" ]]; then
     echo "[INFO] TMHMM predictions..."
     rm -f tmhmm.out .tmhmm.done
