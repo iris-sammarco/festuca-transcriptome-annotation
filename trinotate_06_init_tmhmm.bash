@@ -43,12 +43,6 @@ exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 
-# Create symlinks of the db files in the OUTDIR:
-#ln -sf "${TRINOTATE_DATA_DIR}"/Trinotate.* .
-#ln -sf "${TRINOTATE_DATA_DIR}"/Pfam-A.hmm* .
-#ln -sf "${TRINOTATE_DATA_DIR}"/uniprot_sprot.pep .
-#ln -sf "${TRINOTATE_DATA_DIR}"/{uniprot_sprot.diamond,Rfam.cm,Rfam.clanin} . 2>/dev/null || true
-
 ## Sanity checks (fail-fast)
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
@@ -73,9 +67,6 @@ if [[ ! -s ".tmhmm.done" ]]; then
     
     tmhmm --short < "${PEP_FINAL}" > tmhmm.out 2>"${LOGDIR}/tmhmm.log" \
         || { echo "[FATAL] TMHMM failed. Verify PATH."; exit 1; }
-    
-    Trinotate Trinotate.sqlite LOAD_tmhmm tmhmm.out > "${LOGDIR}/load_tmhmm.log" 2>&1
-    
+
     touch .tmhmm.done
-    echo "[INFO] TMHMM loaded successfully."
 fi
