@@ -108,12 +108,8 @@ elif [[ "${MERGE_ONLY}" == "m" ]]; then
         exit 1
     fi
 	
-	# Load into Trinotate
-    Trinotate Trinotate.sqlite LOAD_signalp "${SIGNALP_MERGED}" > "logs/load_signalp.log" 2>&1
-	
-    touch .signalp_convert.done .signalp.merged.done .signalp.done # Success flags
+	touch .signalp_convert.done .signalp.merged.done .signalp.done # Success flags
 
     echo "[INFO] Merged SignalP file ready: ${SIGNALP_MERGED}"
     echo "[INFO] Non-header prediction lines: ${MERGED_LINES}"
-    echo "[INFO] Trinotate loaded. Check logs/load_signalp.log"
 fi
