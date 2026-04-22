@@ -1,0 +1,66 @@
+#!/bin/bash
+#PBS -l walltime=150:00:00
+#PBS -q default@pbs-m1.metacentrum.cz
+#PBS -l select=1:ncpus=8:mem=20gb:scratch_local=200gb
+#PBS -J 1-72
+#PBS -N eggnog_chunk
+#PBS -j oe
+
+set -euo pipefail
+trap 'echo "[ERROR] ArrayID=${P_ARRAYID} failed on $(date)" >&2; exit 1' ERR
+
+# Environment
+export TMPDIR=$SCRATCHDIR
+module add mambaforge
+export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+mamba activate trinotate_env
+
+OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
+
+mkdir -p "${OUTDIR}/logs"
+
+# Use PBS_ARRAY_INDEX (Metacentrum convention)
+P_ARRAYID=${PBS_ARRAY_INDEX:-1}   # should be 1–72 inside each array job
+echo "DEBUG: P_ARRAYID=$P_ARRAYID PBS_ARRAY_INDEX=$PBS_ARRAY_INDEX" >> "${OUTDIR}/logs/pbs_debug_${P_ARRAYID}.txt"
+
+# Chunk file (zero-padded: chunk_eggnog_001.pep)
+CHUNK_ID=$(printf "%03d" ${P_ARRAYID})
+PEP_CHUNK="${SPLIT_DIR}/chunk_eggnog_${CHUNK_ID}.pep"
+OUTFILE="${SPLIT_DIR}/chunk_eggnog_${CHUNK_ID}"
+
+cd "${OUTDIR}"
+
+# Skip if already done
+[[ -f "${OUTFILE}.emapper.annotations.done" ]] && {
+    echo "[INFO] Chunk ${CHUNK_ID} already done, skipping"
+    exit 0
+}
+
+# Check input exists and non‑empty
+[[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing or empty ${PEP_CHUNK}"; exit 1; }
+
+echo "[INFO] Starting EggNOG chunk ${CHUNK_ID} ($(wc -l < "${PEP_CHUNK}") seqs)"
+
+TEMP_OUT="${OUTFILE}.tmp" # Run with temp output to avoid contention
+
+emapper.py \
+    --data_dir "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/eggnog_data" \
+    -i "${PEP_CHUNK}" \
+    --output "${TEMP_OUT}" \
+    -m diamond \
+    --tax_scope Viridiplantae \
+    --cpu 4 \
+    --override \
+    > "logs/eggnog_chunk_${CHUNK_ID}.log" 2>&1
+
+# Check output and move atomically
+if [[ -f "${TEMP_OUT}.emapper.annotations" ]]; then
+    mv "${TEMP_OUT}.emapper.annotations" "${OUTFILE}.emapper.annotations"
+else
+    echo "[ERROR] Missing ${TEMP_OUT}.emapper.annotations" >&2
+    exit 1
+fi
+
+touch "${OUTFILE}.emapper.annotations.done"
+echo "[SUCCESS] Chunk ${CHUNK_ID}: $(wc -l < "${OUTFILE}.emapper.annotations") lines"

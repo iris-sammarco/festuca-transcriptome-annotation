@@ -1,0 +1,58 @@
+#!/bin/bash
+#PBS -l walltime=100:00:00
+#PBS -q default@pbs-m1.metacentrum.cz
+#PBS -l select=1:ncpus=4:mem=10gb:scratch_local=200gb
+#PBS -J 1-141
+#PBS -N pfam_chunk
+#PBS -j oe
+
+# Export PBS vars (before set -euo)
+export PBS_ARRAY_INDEX=${PBS_ARRAY_INDEX:-1}
+export PBS_O_WORKDIR=${PBS_O_WORKDIR:-$(pwd)}
+
+# DEBUG: Log the actual array index
+echo "DEBUG: PBS_ARRAY_INDEX='${PBS_ARRAY_INDEX}' PBS_ARRAYID='${PBS_ARRAYID:-unset}'" >> logs/pbs_debug_${PBS_ARRAY_INDEX}.txt
+# Trap uses safe variable
+trap 'echo "[ERROR] ArrayID=${PBS_ARRAYID} failed on $(date)" >&2; exit 1' ERR
+
+# Trap uses safe variable
+trap 'echo "[ERROR] ArrayID=${PBS_ARRAY_INDEX} failed on $(date)" >&2; exit 1' ERR
+
+# set -euo AFTER PBS vars
+set -euo pipefail
+
+# Environment
+export TMPDIR=$SCRATCHDIR
+module add mambaforge
+export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+mamba activate trinotate_env
+
+OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep.split"
+PFAM_HMM="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/Pfam-A.hmm"
+
+# Use consistent 3-digit zero-padded naming (matches seqkit)
+CHUNK_ID=$(printf "%03d" ${PBS_ARRAY_INDEX})
+PEP_CHUNK="${SPLIT_DIR}/chunk_pfam_${CHUNK_ID}.pep"
+OUTFILE="${SPLIT_DIR}/chunk_pfam_${CHUNK_ID}.domtblout"
+
+echo "[INFO] Array ${PBS_ARRAY_INDEX}: Using ${PEP_CHUNK} → ${OUTFILE}"
+
+cd "${OUTDIR}"
+mkdir -p logs
+
+# Sanity check
+[[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing chunk ${PEP_CHUNK}"; exit 1; }
+[[ -s "${PFAM_HMM}" ]] || { echo "[FATAL] Missing Pfam HMM"; exit 1; }
+
+# Index HMM if needed (shared across jobs)
+[[ ! -s "${PFAM_HMM}.h3f" ]] && hmmpress "${PFAM_HMM}"
+
+# Run hmmscan
+hmmscan --cpu 4 --domtblout "${OUTFILE}" \
+    "${PFAM_HMM}" "${PEP_CHUNK}" \
+    > "logs/pfam_chunk_${CHUNK_ID}.log" 2>&1
+
+# Success marker
+touch "${OUTFILE}.done"
+echo "[SUCCESS] Pfam chunk ${CHUNK_ID} done: $(wc -l < "${OUTFILE}") domains"
