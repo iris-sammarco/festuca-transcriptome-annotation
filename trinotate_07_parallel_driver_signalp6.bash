@@ -17,17 +17,17 @@ fi
 # Environment
 export TMPDIR=$SCRATCHDIR
 module add mambaforge
-export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+export CONDA_ENVS_PATH=/path/to/conda/envs
 mamba activate trinotate_env
 
 N_CHUNKS=$1
 MERGE_ONLY=${2:-}
 
-OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+OUTDIR="/path/to/project/assembly/trinotate_output"
 INPUT_FILE="${OUTDIR}/Trinity.fasta.transdecoder.pep"
 SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
 PARALLEL_DIR="${OUTDIR}/signalp_output_parallel"
-PBS_SCRIPT="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output/trinotate_07a_signalp6_array.pbs"
+PBS_SCRIPT="${OUTDIR}/trinotate_07a_signalp6_array.pbs"
 
 cd "${OUTDIR}"
 
