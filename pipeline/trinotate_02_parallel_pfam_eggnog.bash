@@ -2,13 +2,13 @@
 
 # parallel_trinotate_steps.bash - Split FASTA -> PBS array jobs -> merge outputs for Pfam/EggNOG
 ## NO QSUB for Master Script!
-# Usage: bash trinotate_03_parallel_pfam_eggnog.bash pfam 141    # split+submit
-#        bash trinotate_03_parallel_pfam_eggnog.bash pfam 141 m # merges the chunks, creates pfam.domtblout
-#        bash trinotate_03_parallel_pfam_eggnog.bash eggnog 72 # split+submit
-#        bash trinotate_03_parallel_pfam_eggnog.bash eggnog 72 m  # merges the chunks, creates eggnog.emapper.annotations
+# Usage: bash trinotate_02_parallel_pfam_eggnog.bash pfam 141    # split+submit
+#        bash trinotate_02_parallel_pfam_eggnog.bash pfam 141 m # merges the chunks, creates pfam.domtblout
+#        bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72 # split+submit
+#        bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72 m  # merges the chunks, creates eggnog.emapper.annotations
 
 # =============================================================================
-# trinotate_03_parallel_pfam_eggnog.bash - Parallel Trinotate Pfam/EggNOG Analysis
+# trinotate_02_parallel_pfam_eggnog.bash - Parallel Trinotate Pfam/EggNOG Analysis
 # =============================================================================
 # AUTHOR: Iris Sammarco
 #
@@ -20,16 +20,16 @@
 #
 # USAGE:
 #   1. SPLIT + SUBMIT (creates chunks, submits PBS array):
-#      bash trinotate_03_parallel_pfam_eggnog.bash pfam 141      # 141 Pfam chunks
-#      bash trinotate_03_parallel_pfam_eggnog.bash eggnog 141    # 141 EggNOG chunks
+#      bash trinotate_02_parallel_pfam_eggnog.bash pfam 141      # 141 Pfam chunks
+#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 141    # 141 EggNOG chunks
 #
 #   2. MERGE ONLY (after jobs complete):
-#      bash trinotate_03_parallel_pfam_eggnog.bash pfam 141 m    # Merge Pfam -> pfam.domtblout
-#      bash trinotate_03_parallel_pfam_eggnog.bash eggnog 141 m  # Merge EggNOG -> eggnog.emapper.annotations
+#      bash trinotate_02_parallel_pfam_eggnog.bash pfam 141 m    # Merge Pfam -> pfam.domtblout
+#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 141 m  # Merge EggNOG -> eggnog.emapper.annotations
 #
 # ARRAY SCRIPTS CALLED:
-#   trinotate_03_pfam_array.pbs
-#   trinotate_03_eggnog_array.pbs
+#   trinotate_02_pfam_array.pbs
+#   trinotate_02_eggnog_array.pbs
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
@@ -57,14 +57,14 @@ case "${STEP}" in
     pfam)
         OUTPUT="pfam.domtblout"
         SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep.split"
-        PBS_SCRIPT="trinotate_03_pfam_array.pbs"
+        PBS_SCRIPT="trinotate_02_pfam_array.pbs"
         INPUT_FILE="${PEP_LONG}"
 		CHUNK_EXT="pep"
         ;;
     eggnog)
         OUTPUT="eggnog.emapper.annotations"
         SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
-        PBS_SCRIPT="trinotate_03_eggnog_array.pbs"
+        PBS_SCRIPT="trinotate_02_eggnog_array.pbs"
         INPUT_FILE="${OUTDIR}/Trinity.fasta.transdecoder.pep"
 		CHUNK_EXT="pep"
         ;;
