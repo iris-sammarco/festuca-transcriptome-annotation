@@ -28,7 +28,75 @@ PREFIX="Festuca_rubra"
 
 mkdir -p "${OUTDIR}" "${LOGDIR}"
 
+# Logging
 exec > >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log") 2>&1
 
 echo "[INFO] Job ${PBS_JOBID} started"
 echo "[INFO] Using SCRATCHDIR: $SCRATCHDIR"
+
+# Copy everything to SCRATCH, critical for accelerating the Job
+echo "[INFO] Copying data to scratch..."
+
+cp ${OUTDIR}/Trinity.fasta $SCRATCHDIR/
+cp ${OUTDIR}/Trinity.fasta.gene_trans_map $SCRATCHDIR/
+cp ${OUTDIR}/Trinity.fasta.transdecoder.pep $SCRATCHDIR/
+cp ${OUTDIR}/Trinotate.sqlite $SCRATCHDIR/
+cp ${OUTDIR}/blastp.rice.outfmt6 $SCRATCHDIR/
+cp ${OUTDIR}/blastp.wheat.outfmt6 $SCRATCHDIR/
+cp ${OUTDIR}/blastx.sprot.outfmt6 $SCRATCHDIR/
+cp ${OUTDIR}/blastp.sprot.outfmt6 $SCRATCHDIR/
+cp ${OUTDIR}/pfam.domtblout $SCRATCHDIR/
+cp ${OUTDIR}/tmhmm.out $SCRATCHDIR/
+cp ${OUTDIR}/rfam.tblout $SCRATCHDIR/ || true
+
+cp -r ${OUTDIR}/signalp_output_parallel $SCRATCHDIR/
+
+cd $SCRATCHDIR
+
+# I'll init a clean database to avoid duplicate rows:
+echo "[INFO] Initializing clean Trinotate DB..."
+
+Trinotate Trinotate.sqlite init \
+  --gene_trans_map Trinity.fasta.gene_trans_map \
+  --transcript_fasta Trinity.fasta \
+  --transdecoder_pep Trinity.fasta.transdecoder.pep
+
+# Safety check: Fail if missing critical files
+for f in blastx.sprot.outfmt6 pfam.domtblout tmhmm.out signalp_output_parallel/signalp.merged.txt; do
+    [[ -s "$f" ]] || { echo "[FATAL] Missing $f"; exit 1; }
+done
+
+## Load Step
+rm -f .trinotate.loads.done
+
+echo "[INFO] LOAD step started $(date)"
+
+Trinotate Trinotate.sqlite LOAD_custom_blast --outfmt6 blastp.rice.outfmt6 --prog blastp --dbtype rice_proteome
+Trinotate Trinotate.sqlite LOAD_custom_blast --outfmt6 blastp.wheat.outfmt6 --prog blastp --dbtype wheat_proteome
+Trinotate Trinotate.sqlite LOAD_swissprot_blastx blastx.sprot.outfmt6
+Trinotate Trinotate.sqlite LOAD_swissprot_blastp blastp.sprot.outfmt6
+Trinotate Trinotate.sqlite LOAD_pfam pfam.domtblout
+Trinotate Trinotate.sqlite LOAD_tmhmm tmhmm.out
+Trinotate Trinotate.sqlite LOAD_signalp signalp_output_parallel/signalp.merged.txt
+
+#Trinotate Trinotate.sqlite LOAD_eggnog eggnog.emapper.annotations 2> "${LOGDIR}/load.eggnog.log" 2>&1 # the version of Trinotate I'm using (3.2.2) doesnt support this load
+#Trinotate Trinotate.sqlite LOAD_rfam rfam.tblout 2> "${LOGDIR}/load.rfam.log" 2>&1 # the version of Trinotate I'm using (3.2.2) doesnt support this load
+touch .trinotate.loads.done
+
+echo "[INFO] LOAD completed $(date)"
+
+## Report step
+#rm -f ${PREFIX}.annotation_report*.xls
+echo "[INFO] REPORT step started $(date)"
+
+Trinotate Trinotate.sqlite report -E 1e-20 \
+	--pfam_cutoff DGC | gzip > "${PREFIX}.annotation_report_strict.xls.gz"
+
+echo "[INFO] REPORT completed $(date)"
+
+## Copy results back
+echo "[INFO] Copying results back..."
+
+cp ${PREFIX}.annotation_report_strict.xls.gz ${OUTDIR}/
+
+echo "✅ DONE"
