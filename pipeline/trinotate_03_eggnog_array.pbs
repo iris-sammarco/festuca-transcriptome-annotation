@@ -34,4 +34,25 @@ cd "${OUTDIR}"
 
 echo "[INFO] Starting EggNOG chunk ${CHUNK_ID}"
 
-TEMP_OUT="${OUTFILE}.tmp"
+TEMP_OUT="${OUTFILE}.tmp" # Run with temp output to avoid contention
+
+emapper.py \
+    --data_dir "${EGGNOG_DATA_DIR}" \
+    -i "${PEP_CHUNK}" \
+    --output "${TEMP_OUT}" \
+    -m diamond \
+    --tax_scope Viridiplantae \
+    --cpu 4 \
+    --override \
+    > "logs/eggnog_chunk_${CHUNK_ID}.log" 2>&1
+
+# Check output and move atomically
+if [[ -f "${TEMP_OUT}.emapper.annotations" ]]; then
+    mv "${TEMP_OUT}.emapper.annotations" "${OUTFILE}.emapper.annotations"
+else
+    echo "[ERROR] Missing ${TEMP_OUT}.emapper.annotations" >&2
+    exit 1
+fi
+
+touch "${OUTFILE}.emapper.annotations.done"
+echo "[SUCCESS] Chunk ${CHUNK_ID}: $(wc -l < "${OUTFILE}.emapper.annotations") lines"
