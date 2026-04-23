@@ -32,6 +32,25 @@ EVAL="1e-5"
 MAX_TARGETS=5
 
 cd "${OUTDIR}"
+
+# Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+
+## Sanity checks (fail-fast)
+[[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
+ln -sf "${ASSEMBLY}" Trinity.fasta
+
+## Step 5: TransDecoder.Predict - Uses BLASTP + Pfam domtblout → BETTER ORFs (20-30% fewer false positives). Predicts which ORFs are likely to be coding
+if [[ ! -s "Trinity.fasta.transdecoder.pep" || ! -s ".transdecoder_predict.done" ]]; then
+    echo "[INFO] TransDecoder.Predict..."
+    rm -f Trinity.fasta.transdecoder.pep .transdecoder_predict.done
+    TransDecoder.Predict -t Trinity.fasta \
+        --retain_blastp_hits blastp.sprot.outfmt6 \
+        --retain_pfam_hits pfam.domtblout \
+        > "${LOGDIR}/transdecoder.predict.log" 2>&1
+    touch .transdecoder_predict.done
+fi
+PEP_FINAL="Trinity.fasta.transdecoder.pep"
+
