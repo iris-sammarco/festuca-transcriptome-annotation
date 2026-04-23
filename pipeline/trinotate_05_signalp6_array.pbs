@@ -47,3 +47,5 @@ signalp6 --fastafile "${PEP_CHUNK}" \
 
 cp "${PRED_FILE}" "${FLAT_PRED}"
 touch "${FLAT_PRED}.done"
+
+echo "[SUCCESS] SignalP chunk ${CHUNK_ID} done: $(wc -l < "${FLAT_PRED}") lines"
