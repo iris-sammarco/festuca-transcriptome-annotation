@@ -36,6 +36,54 @@ MAX_TARGETS=5
 mkdir -p "${OUTDIR}" "${LOGDIR}"
 cd "${OUTDIR}"
 
+# Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+
+# Create symlinks of the db files in the OUTDIR:
+ln -sf "${TRINOTATE_DATA_DIR}"/Trinotate.sqlite* .
+ln -sf "${TRINOTATE_DATA_DIR}"/Pfam-A.hmm* .
+ln -sf "${TRINOTATE_DATA_DIR}"/uniprot_sprot.pep .
+ln -sf "${TRINOTATE_DATA_DIR}"/{uniprot_sprot.diamond,Rfam.cm,Rfam.clanin} . 2>/dev/null || true
+
+## Sanity checks (fail-fast)
+[[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
+ln -sf "${ASSEMBLY}" Trinity.fasta
+
+echo "[INFO] Rfam-only job started $(date)"
+
+## Step 4C: Infernal cmscan Rfam for ncRNAs
+RFAM_CM="${TRINOTATE_DATA_DIR}/Rfam.cm"
+if [[ ! -s "rfam.tblout" || ! -s ".rfam.done" ]]; then
+	# Calculate Z:
+    echo "[INFO] Calculating Z for accurate E-values..." # For cmscan, Z is the length of the current query sequence [nucleotides] multiplied by 2 (because both strands of the sequence are searched [in each model]) and multiplied again by the number of CMs [covariance models] in the target CM database.
+	# --Z = (total nucleotides in ALL Trinity.fasta × 2 strands) / 1,000,000 Mb
+    TOTAL_NT=$(grep -v "^>" Trinity.fasta | awk '{total+=length($0)} END{print total+0}') # Remove headers and count number of nucleotides
+	TOTAL_MB=$(echo "${TOTAL_NT} * 2 / 1000000" | bc -l | awk '{printf "%.6f", $1}')
+	echo "[INFO] --Z ${TOTAL_MB}" # --Z 3182.349886
+	
+	TOTAL_MB=$(awk '/^>/ {if(seq) {total+=length(seq)}; seq=""} !/^>/ {seq=seq$0} END{if(seq) total+=length(seq); print (total*2)/1000000}' Trinity.fasta | awk '{printf "%.6f", $1}') # --Z 3182.349886
+    echo "[INFO] --Z ${TOTAL_MB} (total Mb both strands)"
+
+    echo "[INFO] Downloading + scanning Rfam (Infernal cmscan)..."
+    rm -f rfam.tblout *.cmscan.log .rfam.done
+    # Download/index if needed
+    [[ -s "${RFAM_CM}" ]] || {
+        wget -N "https://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.cm.gz" -O "${TRINOTATE_DATA_DIR}/Rfam.cm.gz"
+        gunzip "${TRINOTATE_DATA_DIR}/Rfam.cm.gz"
+    }
+    [[ -s "${TRINOTATE_DATA_DIR}/Rfam.clanin" ]] || {
+        wget -N "https://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.clanin" -O "${TRINOTATE_DATA_DIR}/Rfam.clanin"
+    }
+	# Index CM
+    [[ -s "${RFAM_CM}.i1f" ]] || cmpress "${RFAM_CM}"
+    # Scan (add -Z <total_Mb> for accurate E-values if known; est. total size)
+    cmscan --cut_ga --rfam --nohmmonly --clanin "${TRINOTATE_DATA_DIR}/Rfam.clanin" \
+           --oskip --tblout rfam.tblout --fmt 2 --notextw --cpu ${THREADS} -Z ${TOTAL_MB} \
+           "${RFAM_CM}" Trinity.fasta \
+           > "${LOGDIR}/rfam.cmscan.log" 2>&1
+    #tail -1 rfam.cmscan.log  # Verify Z used
+	touch .rfam.done
+	echo "[SUCCESS] Rfam complete $(date)"
+fi
