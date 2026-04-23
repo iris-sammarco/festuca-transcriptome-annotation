@@ -146,6 +146,7 @@ cp -s "${OUTDIR}/eggnog.emapper.annotations" .
 cp -s "${OUTDIR}/rfam.tblout" .
 
 cd "${FINAL_DIR}"
+# Run in PBS if needed:
 python3 pipeline/trinotate_09_merge_annotations.py
 python3 pipeline/trinotate_10_go_background.py
 python3 pipeline/trinotate_11_kegg_background.py
