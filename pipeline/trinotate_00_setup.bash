@@ -50,43 +50,6 @@ export TRINOTATE_HOME=$(dirname $(which Trinotate))
 ${TRINOTATE_HOME}/Build_Trinotate_Boilerplate_SQLite_db.pl Trinotate_new # In the pl script the eggnog path is broken: comment out the block that downloads and loads eggNOG, specifically the commands around wget http://eggnogdb.embl.de/.../NOG.annotations.tsv.gz and the downstream gunzip/import steps
 # I've installed eggnog separately within the mamba environment (downloads ~2-5GB SwissProt/Pfam, takes 10-30min). The command should have included Trinotate as output rather than Trinotate.sqlite, Ive renamed the files to: Trinotate.sqlite  Trinotate.TaxonomyIndex  Trinotate.UniprotIndex
  
-## Install signalP v6 (Python package). Download the fast version (as I'll be running in fast mode, recommended by the developers for de novo full annotations) at: https://services.healthtech.dtu.dk/service.php?SignalP (I downloaded the slow_sequential version)
-mamba activate trinotate_env
-
-cd /storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data
-mkdir -p signalp6_fast
-cd signalp6_fast
-
-wget "https://services.healthtech.dtu.dk/download/92439990-afc8-436d-a640-16da00945b52/signalp-6.0i.fast.tar.gz" # they'll email you the link after filling the online form (th elink is valid for 4h)
-tar -xzvf signalp-6.0i.fast.tar.gz
-
-cd signalp6_fast/signalp-6-package
-
-# Re‑use your existing mamba env
-pip install --no-cache-dir .
-
-# Find where signalp is installed:
-SIGNALP_DIR=$(python3 -c "import signalp; import os; print(os.path.dirname(signalp.__file__))")
-
-SIGNALP_CONDA_DIR="/storage/pruhonice1-ibot/home/irissammarco/.conda/envs/trinotate_env/lib/python3.11/site-packages/signalp"
-
-# Copy the fast model into the conda model_weights directory:
-cd /storage/pruhonice1-ibot/home/irissammarco/.conda/envs/trinotate_env/lib/python3.11/site-packages/signalp
-mkdir -p model_weights
-cp -r /auto/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/signalp6_fast/signalp6_fast/signalp-6-package/models/* model_weights
-
-## Install tmhmm v2
-cd /storage/plzen1/home/irissammarco/Festuca_RNA_assembly/
-
-wget "https://services.healthtech.dtu.dk/download/e4150c15-6557-4252-99db-5bfd5b1245df/tmhmm-2.0c.Linux.tar.gz"
-
-tar -xzvf tmhmm-2.0c.Linux.tar.gz
-
-# Edit the scripts `tmhmm` and `tmhmmformat.pl` following the instructions from the Trinotate documentation
-
-## IMPORTANT: Add temporarily to path when running the commands (it'll be part of the script):
-export PATH="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/tmhmm-2.0c/bin:$PATH"
-
 ### Run the scripts (they're divided into several scripts as some steps are very long):
 cd /storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data
 qsub trinotate_01_main_start.bash # gene→transcript map, TransDecoder LongOrfs, Direct Diamond SwissProt BLASTP
