@@ -34,6 +34,23 @@ MAX_TARGETS=5
 mkdir -p "${OUTDIR}" "${LOGDIR}"
 cd "${OUTDIR}"
 
+# Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+
+## Sanity checks (fail-fast)
+[[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
+ln -sf "${ASSEMBLY}" Trinity.fasta
+
+## STEP 9: TMHMM - predict transmembrane domains
+PEP_FINAL="Trinity.fasta.transdecoder.pep"
+if [[ ! -s ".tmhmm.done" ]]; then
+    echo "[INFO] TMHMM predictions..."
+    rm -f tmhmm.out .tmhmm.done
+    
+    tmhmm --short < "${PEP_FINAL}" > tmhmm.out 2>"${LOGDIR}/tmhmm.log" \
+        || { echo "[FATAL] TMHMM failed. Verify PATH."; exit 1; }
+
+    touch .tmhmm.done
+fi
