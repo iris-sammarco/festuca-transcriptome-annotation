@@ -9,7 +9,7 @@
 # Author: Iris Sammarco
 # Date: 06/03/2026
 # Aim: TransDecoder ORF prediction on Trinity assembly.
-# Run: qsub trinotate_02_transdecoder.bash
+# Run: qsub trinotate_03_transdecoder.bash
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
@@ -47,8 +47,8 @@ if [[ ! -s "Trinity.fasta.transdecoder.pep" || ! -s ".transdecoder_predict.done"
     echo "[INFO] TransDecoder.Predict..."
     rm -f Trinity.fasta.transdecoder.pep .transdecoder_predict.done
     TransDecoder.Predict -t Trinity.fasta \
-        --retain_blastp_hits blastp.sprot.outfmt6 \
-        --retain_pfam_hits pfam.domtblout \
+        --retain_blastp_hits blastp.sprot.outfmt6 \ # produced by step 01
+        --retain_pfam_hits pfam.domtblout \ # produced by step 02
         > "${LOGDIR}/transdecoder.predict.log" 2>&1
     touch .transdecoder_predict.done
 fi
