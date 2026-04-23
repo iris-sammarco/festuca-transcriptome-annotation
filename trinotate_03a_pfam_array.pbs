@@ -24,12 +24,12 @@ set -euo pipefail
 # Environment
 export TMPDIR=$SCRATCHDIR
 module add mambaforge
-export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+export CONDA_ENVS_PATH=/path/to/conda/envs
 mamba activate trinotate_env
 
-OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+OUTDIR="/path/to/project/assembly/trinotate_output"
 SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep.split"
-PFAM_HMM="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/Pfam-A.hmm"
+PFAM_HMM="/path/to/project/assembly/trinotate_data/Pfam-A.hmm"
 
 # Use consistent 3-digit zero-padded naming (matches seqkit)
 CHUNK_ID=$(printf "%03d" ${PBS_ARRAY_INDEX})
