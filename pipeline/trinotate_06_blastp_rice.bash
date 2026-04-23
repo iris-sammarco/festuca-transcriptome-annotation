@@ -34,6 +34,28 @@ MAX_TARGETS=5
 mkdir -p "${OUTDIR}" "${LOGDIR}"
 cd "${OUTDIR}"
 
+# Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+
+## Sanity checks (fail-fast)
+[[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
+ln -sf "${ASSEMBLY}" Trinity.fasta
+
+## STEP 11: Rice Curation based on their proteomes fasta files
+PEP_FINAL="Trinity.fasta.transdecoder.pep"
+if [[ ! -s "blastp.rice.outfmt6" || ! -s ".rice.done" ]]; then
+    echo "[INFO] Rice proteome..."
+    rm -f *.rice* .rice.done
+    wget -N --no-check-certificate \ "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/oryza_sativa/pep/Oryza_sativa.IRGSP-1.0.pep.all.fa.gz"
+    gunzip -f Oryza_sativa.IRGSP-1.0.pep.all.fa.gz
+    #diamond makedb --in Oryza_sativa.IRGSP-1.0.pep.all.fa -d rice --threads ${THREADS}
+    #diamond blastp --db rice.dmnd --query "${PEP_FINAL}" \
+    #    --out blastp.rice.outfmt6 --evalue ${EVAL} --max-target-seqs ${MAX_TARGETS} --threads ${THREADS} --outfmt 6 \
+	makeblastdb -in Oryza_sativa.IRGSP-1.0.pep.all.fa -dbtype prot -out rice -blastdb_version 4 # run with BLAST+ as Trinotate takes this input
+    blastp -db rice -query "${PEP_FINAL}" -out blastp.rice.outfmt6 \
+    -evalue ${EVAL} -max_target_seqs ${MAX_TARGETS} -max_hsps 1 \
+    -num_threads ${THREADS} -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" > "${LOGDIR}/rice.log" 2>&1
+    touch .rice.done
+fi
