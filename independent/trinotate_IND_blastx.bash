@@ -35,6 +35,33 @@ MAX_TARGETS=5
 mkdir -p "${OUTDIR}" "${LOGDIR}"
 cd "${OUTDIR}"
 
+# Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
 echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+
+# Create symlinks of the db files in the OUTDIR:
+ln -sf "${TRINOTATE_DATA_DIR}"/Trinotate.sqlite* .
+ln -sf "${TRINOTATE_DATA_DIR}"/Pfam-A.hmm* .
+ln -sf "${TRINOTATE_DATA_DIR}"/uniprot_sprot.pep .
+ln -sf "${TRINOTATE_DATA_DIR}"/{uniprot_sprot.diamond,Rfam.cm,Rfam.clanin} . 2>/dev/null || true
+
+## Sanity checks (fail-fast)
+[[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
+ln -sf "${ASSEMBLY}" Trinity.fasta
+
+echo "[INFO] BLASTX-only job started $(date)"
+
+## STEP 7: Diamond BLASTX (full transcripts vs SwissProt)
+if [[ ! -s "blastx.sprot.outfmt6" || ! -s ".blastx.done" ]]; then
+    echo "[INFO] Diamond BLASTX..."
+    rm -f blastx.sprot.outfmt6 .blastx.done
+    diamond blastx \
+        --db "${TRINOTATE_DATA_DIR}/uniprot_sprot.diamond" \
+        --query Trinity.fasta \
+        --out blastx.sprot.outfmt6 \
+        --evalue ${EVAL} --max-target-seqs ${MAX_TARGETS} --threads ${THREADS} --outfmt 6 \
+        > "${LOGDIR}/blastx.log" 2>&1
+    touch .blastx.done
+	echo "[SUCCESS] BLASTX complete $(date)"
+fi
