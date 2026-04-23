@@ -8,7 +8,8 @@ TRINITY_...      K00001;K01810
 import pandas as pd
 import re
 
-df = pd.read_csv("/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/final_annotation/Festuca_rubra_annotation_report.extended.tsv", sep="\t")
+INPUT_FILE = "/path/to/project/assembly/final_annotation/Festuca_rubra_annotation_report.extended.tsv"
+df = pd.read_csv(INPUT_FILE, sep="\t")
 
 def extract_kegg(text):
     if pd.isna(text):
