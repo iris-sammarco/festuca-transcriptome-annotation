@@ -69,15 +69,15 @@ fi
 # Environment & Paths
 export TMPDIR=$SCRATCHDIR # This will force the application to place the temporary files into scratch directory instead of a /tmp directory
 module add mambaforge
-export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+export CONDA_ENVS_PATH=/path/to/conda/envs
 mamba activate trinotate_env
 
 STEP=$1
 N_CHUNKS=$2
 MERGE_ONLY=${3:-}
-OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+OUTDIR="/path/to/project/assembly/trinotate_output"
 PEP_LONG="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep"
-PFAM_HMM="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/Pfam-A.hmm"
+PFAM_HMM="/path/to/project/assembly/trinotate_data/Pfam-A.hmm"
 
 cd "${OUTDIR}"
 
