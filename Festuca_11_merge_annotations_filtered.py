@@ -30,11 +30,10 @@ import pandas as pd
 ############################################
 # FILES (EDIT THESE)
 ############################################
-trinotate_file = "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/final_annotation/Festuca_rubra.annotation_report_strict.xls"
-eggnog_file = "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/final_annotation/eggnog.emapper.annotations"
-rfam_file = "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/final_annotation/rfam.tblout"
-
-output_file = "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/final_annotation/Festuca_rubra_annotation_report.extended.tsv"
+trinotate_file = "/path/to/project/assembly/final_annotation/Festuca_rubra.annotation_report_strict.xls"
+eggnog_file = "/path/to/project/assembly/final_annotation/eggnog.emapper.annotations"
+rfam_file = "/path/to/project/assembly/final_annotation/rfam.tblout"
+output_file = "/path/to/project/assembly/final_annotation/Festuca_rubra_annotation_report.extended.tsv"
 
 ############################################
 # 1. LOAD TRINOTATE
