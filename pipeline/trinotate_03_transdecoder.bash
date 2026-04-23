@@ -8,7 +8,7 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: TransDecoder ORF prediction on Trinity assembly.
+# Aim: Run TransDecoder.Predict to identify likely coding ORFs, using Diamond BLASTP (from step 01) and Pfam hmmscan (from step 02) hits as supporting evidence.
 # Run: qsub trinotate_03_transdecoder.bash
 
 set -euo pipefail
