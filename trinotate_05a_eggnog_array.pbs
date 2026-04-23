@@ -12,11 +12,12 @@ trap 'echo "[ERROR] ArrayID=${P_ARRAYID} failed on $(date)" >&2; exit 1' ERR
 # Environment
 export TMPDIR=$SCRATCHDIR
 module add mambaforge
-export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+export CONDA_ENVS_PATH=/path/to/conda/envs
 mamba activate trinotate_env
 
-OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+OUTDIR="/path/to/project/assembly/trinotate_output"
 SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
+EGGNOG_DATA_DIR="/path/to/project/assembly/trinotate_data/eggnog_data"
 
 mkdir -p "${OUTDIR}/logs"
 
@@ -45,7 +46,7 @@ echo "[INFO] Starting EggNOG chunk ${CHUNK_ID} ($(wc -l < "${PEP_CHUNK}") seqs)"
 TEMP_OUT="${OUTFILE}.tmp" # Run with temp output to avoid contention
 
 emapper.py \
-    --data_dir "/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data/eggnog_data" \
+    --data_dir "${EGGNOG_DATA_DIR}" \
     -i "${PEP_CHUNK}" \
     --output "${TEMP_OUT}" \
     -m diamond \
