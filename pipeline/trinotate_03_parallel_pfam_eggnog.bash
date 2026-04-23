@@ -57,14 +57,14 @@ case "${STEP}" in
     pfam)
         OUTPUT="pfam.domtblout"
         SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep.split"
-        PBS_SCRIPT="trinotate_03a_pfam_array.pbs"
+        PBS_SCRIPT="trinotate_03_pfam_array.pbs"
         INPUT_FILE="${PEP_LONG}"
 		CHUNK_EXT="pep"
         ;;
     eggnog)
         OUTPUT="eggnog.emapper.annotations"
         SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
-        PBS_SCRIPT="trinotate_05a_eggnog_array.pbs"
+        PBS_SCRIPT="trinotate_03_eggnog_array.pbs"
         INPUT_FILE="${OUTDIR}/Trinity.fasta.transdecoder.pep"
 		CHUNK_EXT="pep"
         ;;
