@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -l walltime=150:00:00
+#PBS -q default@pbs-m1.metacentrum.cz
+#PBS -l select=1:ncpus=8:mem=20gb:scratch_local=200gb
+#PBS -J 1-72
+#PBS -N eggnog_chunk
+#PBS -j oe
+
+set -euo pipefail
+trap 'echo "[ERROR] ArrayID=${P_ARRAYID} failed on $(date)" >&2; exit 1' ERR
+
+export TMPDIR=$SCRATCHDIR
+module add mambaforge
+export CONDA_ENVS_PATH=/path/to/conda/envs
+mamba activate trinotate_env
+
+OUTDIR="/path/to/project/assembly/trinotate_output"
+SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
+EGGNOG_DATA_DIR="/path/to/project/assembly/trinotate_data/eggnog_data"
+
+mkdir -p "${OUTDIR}/logs"
+
+P_ARRAYID=${PBS_ARRAY_INDEX:-1}
+echo "DEBUG: P_ARRAYID=$P_ARRAYID PBS_ARRAY_INDEX=$PBS_ARRAY_INDEX" >> "${OUTDIR}/logs/pbs_debug_${P_ARRAYID}.txt"
+
+CHUNK_ID=$(printf "%03d" ${P_ARRAYID})
+PEP_CHUNK="${SPLIT_DIR}/chunk_eggnog_${CHUNK_ID}.pep"
+OUTFILE="${SPLIT_DIR}/chunk_eggnog_${CHUNK_ID}"
+
+cd "${OUTDIR}"
+
+[[ -f "${OUTFILE}.emapper.annotations.done" ]] && { echo "[INFO] Chunk ${CHUNK_ID} already done, skipping"; exit 0; }
+[[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing or empty ${PEP_CHUNK}"; exit 1; }
+
+echo "[INFO] Starting EggNOG chunk ${CHUNK_ID}"
+
+TEMP_OUT="${OUTFILE}.tmp"

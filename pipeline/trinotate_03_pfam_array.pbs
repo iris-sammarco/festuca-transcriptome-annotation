@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -l walltime=100:00:00
+#PBS -q default@pbs-m1.metacentrum.cz
+#PBS -l select=1:ncpus=4:mem=10gb:scratch_local=200gb
+#PBS -J 1-141
+#PBS -N pfam_chunk
+#PBS -j oe
+
+export PBS_ARRAY_INDEX=${PBS_ARRAY_INDEX:-1}
+export PBS_O_WORKDIR=${PBS_O_WORKDIR:-$(pwd)}
+
+echo "DEBUG: PBS_ARRAY_INDEX='${PBS_ARRAY_INDEX}' PBS_ARRAYID='${PBS_ARRAYID:-unset}'" >> logs/pbs_debug_${PBS_ARRAY_INDEX}.txt
+trap 'echo "[ERROR] ArrayID=${PBS_ARRAYID} failed on $(date)" >&2; exit 1' ERR
+trap 'echo "[ERROR] ArrayID=${PBS_ARRAY_INDEX} failed on $(date)" >&2; exit 1' ERR
+
+set -euo pipefail
+
+export TMPDIR=$SCRATCHDIR
+module add mambaforge
+export CONDA_ENVS_PATH=/path/to/conda/envs
+mamba activate trinotate_env
+
+OUTDIR="/path/to/project/assembly/trinotate_output"
+SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep.split"
+PFAM_HMM="/path/to/project/assembly/trinotate_data/Pfam-A.hmm"
+
+CHUNK_ID=$(printf "%03d" ${PBS_ARRAY_INDEX})
+PEP_CHUNK="${SPLIT_DIR}/chunk_pfam_${CHUNK_ID}.pep"
+OUTFILE="${SPLIT_DIR}/chunk_pfam_${CHUNK_ID}.domtblout"
+
+echo "[INFO] Array ${PBS_ARRAY_INDEX}: Using ${PEP_CHUNK} -> ${OUTFILE}"
+
+cd "${OUTDIR}"
+mkdir -p logs
+
+[[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing chunk ${PEP_CHUNK}"; exit 1; }

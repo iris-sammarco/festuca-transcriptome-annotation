@@ -1,0 +1,49 @@
+#!/bin/bash
+#PBS -l walltime=24:00:00
+#PBS -q default@pbs-m1.metacentrum.cz
+#PBS -l select=1:ncpus=4:mem=10gb:scratch_local=200gb
+#PBS -J 1-72
+#PBS -N signalp_chunk
+#PBS -j oe
+
+export PBS_ARRAY_INDEX=${PBS_ARRAY_INDEX:-1}
+trap 'echo "[ERROR] ArrayID=${PBS_ARRAY_INDEX} failed on $(date)" >&2; exit 1' ERR
+set -euo pipefail
+
+export TMPDIR=$SCRATCHDIR
+module add mambaforge
+export CONDA_ENVS_PATH=/path/to/conda/envs
+mamba activate trinotate_env
+
+OUTDIR="/path/to/project/assembly/trinotate_output"
+SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
+PARALLEL_DIR="${OUTDIR}/signalp_output_parallel"
+
+CHUNK_ID=$(printf "%03d" "${PBS_ARRAY_INDEX}")
+PEP_CHUNK="${SPLIT_DIR}/chunk_signalp_${CHUNK_ID}.pep"
+CHUNK_OUTDIR="${PARALLEL_DIR}/chunk_signalp_${CHUNK_ID}"
+PRED_FILE="${CHUNK_OUTDIR}/prediction_results.txt"
+FLAT_PRED="${PARALLEL_DIR}/chunk_signalp_${CHUNK_ID}.prediction_results.txt"
+
+cd "${OUTDIR}"
+mkdir -p logs "${PARALLEL_DIR}"
+
+echo "[INFO] Array ${PBS_ARRAY_INDEX}: ${PEP_CHUNK} -> ${CHUNK_OUTDIR}"
+
+[[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing chunk ${PEP_CHUNK}" >&2; exit 1; }
+
+rm -rf "${CHUNK_OUTDIR}"
+mkdir -p "${CHUNK_OUTDIR}"
+rm -f "${FLAT_PRED}" "${FLAT_PRED}.done"
+
+signalp6 --fastafile "${PEP_CHUNK}" \
+         --organism eukarya \
+         --output_dir "${CHUNK_OUTDIR}" \
+         --format none \
+         --mode fast \
+         > "logs/signalp_chunk_${CHUNK_ID}.log" 2>&1
+
+[[ -s "${PRED_FILE}" ]] || { echo "[FATAL] Missing SignalP result ${PRED_FILE}" >&2; exit 1; }
+
+cp "${PRED_FILE}" "${FLAT_PRED}"
+touch "${FLAT_PRED}.done"
