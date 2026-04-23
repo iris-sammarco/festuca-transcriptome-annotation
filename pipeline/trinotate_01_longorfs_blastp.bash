@@ -8,10 +8,8 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: Annotate Festuca rubra Trinity assembly with Trinotate + rice/wheat curation as no reference genome is available for F. rubra. When each step terminates successfully, it creates an output file with the "done" flag, so if the script needs to be resumed it will skip all the steps that have the files complete.
-# Separate the longest steps in separate scripts.
-# Outputs: annotation_report.xls with Pfam domains, TM/signal peptides, homology
-# Run: qsub trinotate_01_blast_diamond.bash
+# Aim: Generate gene-to-transcript map, extract candidate long ORFs with TransDecoder.LongOrfs, and run Diamond BLASTP against SwissProt to provide homology evidence for ORF prediction.
+# Run: qsub trinotate_01_longorfs_blastp.bash
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR # debug
