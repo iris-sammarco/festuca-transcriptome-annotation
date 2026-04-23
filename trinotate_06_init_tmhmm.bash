@@ -19,17 +19,17 @@ trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1
 # Environment & Paths
 export TMPDIR=$SCRATCHDIR # This will force the application to place the temporary files into scratch directory instead of a /tmp directory
 module add mambaforge
-export CONDA_ENVS_PATH=/storage/pruhonice1-ibot/home/irissammarco/.conda/envs
+export CONDA_ENVS_PATH=/path/to/conda/envs
 mamba activate trinotate_env
-export TRINITY_HOME="/storage/pruhonice1-ibot/home/irissammarco/.conda/envs/trinotate_env/opt/trinity-2.8.5"
-export PATH="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/tmhmm-2.0c/bin:$PATH"
-export TRINOTATE_DATA_DIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_data" # expects the files: Trinotate.sqlite and uniprot_sprot.fa
+export TRINITY_HOME="/path/to/conda/envs/trinotate_env/opt/trinity-2.8.5"
+export PATH="/path/to/project/tmhmm-2.0c/bin:$PATH"
+export TRINOTATE_DATA_DIR="/path/to/project/assembly/trinotate_data" # expects the files: Trinotate.sqlite and uniprot_sprot.fa
 export EGGNOG_DATA_DIR="${TRINOTATE_DATA_DIR}/eggnog_data"
 
 # Config
-ASSEMBLY="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/Trinity_output.Trinity.fasta"
+ASSEMBLY="/path/to/project/assembly/Trinity_output.Trinity.fasta"
 PREFIX="Festuca_rubra"
-OUTDIR="/storage/plzen1/home/irissammarco/Festuca_RNA_assembly/assembly/trinotate_output"
+OUTDIR="/path/to/project/assembly/trinotate_output"
 LOGDIR="${OUTDIR}/logs"
 THREADS=12
 EVAL="1e-5"  # Strict Diamond E-value
