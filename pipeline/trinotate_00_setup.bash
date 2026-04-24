@@ -105,20 +105,21 @@ qsub independent/trinotate_IND_rfam.bash    # Rfam cmscan; takes ~200 h. It can 
 
 # --- STEP 01: gene→transcript map, TransDecoder LongOrfs, Diamond BLASTP ---
 cd "${OUTDIR}"
-qsub pipeline/trinotate_01_blast_diamond.bash
+qsub pipeline/trinotate_01_longorfs_blastp.bash
 
 # --- STEP 02 (parallel): Pfam hmmscan ---
 # Split input into N chunks, submit PBS array, then merge when all jobs finish.
 # Adjust N_CHUNKS to your dataset size (used 141 here).
 cd "${OUTDIR}"
-bash pipeline/trinotate_03_parallel_pfam_eggnog.bash pfam 141    # split + submit
-bash pipeline/trinotate_03_parallel_pfam_eggnog.bash pfam 141 m  # merge → pfam.domtblout
+bash pipeline/trinotate_02_parallel_pfam_eggnog.bash pfam 141    # split + submit
+bash pipeline/trinotate_02_parallel_pfam_eggnog.bash pfam 141 m  # merge → pfam.domtblout
 
 # --- STEP 03: TransDecoder Predict (requires Pfam output from step above) ---
 cd "${OUTDIR}"
-qsub pipeline/trinotate_02_transdecoder.bash
+qsub pipeline/trinotate_03_transdecoder.bash
 
-# --- STEP 04 (parallel): EggNOG annotation (requires TransDecoder.pep from step above) ---
+# --- EggNOG annotation (requires Trinity.fasta.transdecoder.pep from step 03) ---
+# Adjust N_CHUNKS to your dataset size (used 72 here: less than Pfam because Pfam rns on longest_orfs.pep which is larger; EggNOG runs on the final transdecoder.pep which is smaller after TransDecoder.Predict filtering).
 cd "${OUTDIR}"
 bash pipeline/trinotate_03_parallel_pfam_eggnog.bash eggnog 72    # split + submit
 bash pipeline/trinotate_03_parallel_pfam_eggnog.bash eggnog 72 m  # merge → eggnog.emapper.annotations
@@ -161,7 +162,8 @@ python3 pipeline/trinotate_11_kegg_background.py
 # Run manually in ${FINAL_DIR} after all steps complete.
 # =============================================================================
 
-## Remove empty columns from report (rnammer col 4, eggnog col 13, transcript col 18, peptide col 19) and create a final report:
+## Remove empty columns from report (rnammer col 4, eggnog col 13, transcript col 18, peptide col 19; these columns are empty as: RNAmmer was not run; EggNOG was loaded via Python merge, not Trinotate; transcript/peptide sequences are excluded to keep file size manageable) and create a final report
+# Run all checks above BEFORE compressing
 awk -F'\t' 'BEGIN{OFS="\t"} {
     f=""; for(i=1;i<=NF;i++) if(i!=4 && i!=13 && i!=18 && i!=19) f = f (f==""?"":"\t") $i; print f
 }' Festuca_rubra_annotation_report.extended.tsv > Festuca_rubra_annotation_report_final.tsv
