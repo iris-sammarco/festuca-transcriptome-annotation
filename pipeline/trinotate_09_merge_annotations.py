@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
 trinotate_09_merge_annotations.py
 
