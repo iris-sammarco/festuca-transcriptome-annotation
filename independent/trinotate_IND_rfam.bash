@@ -7,11 +7,13 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
-# Aim: Run the Rfam ncRNA scan independently from the main pipeline.
-#      This step is not position-dependent and can be run at any time before the final load (step 08).
-#      Note: this step is slow.
+# Date: 03/2026
+# Aim: Scan the Trinity transcriptome assembly for ncRNAs using Infernal cmscan against the Rfam database. Uses --cut_ga (Rfam's gathering threshold) and dynamically computes --Z (total Mb × 2 strands) for accurate E-values.
+# Position-independent — can run at any time before step 08. Note: slow (~200 h walltime), consider parallelizing this step.
+# Rfam.cm and Rfam.clanin are downloaded automatically if absent.
 # Run: qsub trinotate_IND_rfam.bash
+# Input: Trinity_output.Trinity.fasta, Rfam.cm, Rfam.clanin
+# Output: rfam.tblout
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
