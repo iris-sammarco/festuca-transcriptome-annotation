@@ -41,7 +41,7 @@ case "${STEP}" in
     eggnog)
         OUTPUT="eggnog.emapper.annotations"
         SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
-        PBS_SCRIPT="trinotate_02_eggnog_array.pbs"
+        PBS_SCRIPT="trinotate_04_eggnog_array.pbs"
         INPUT_FILE="${OUTDIR}/Trinity.fasta.transdecoder.pep"
 		CHUNK_EXT="pep"
         ;;
