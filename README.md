@@ -78,4 +78,4 @@ If you use this code before the manuscript is published, please cite this reposi
 
 ## License
 
-To be added.
+MIT License — see [LICENSE](LICENSE) for details.
