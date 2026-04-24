@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 """
-trinotate_11_kegg_background.py
+trinotate_12_kegg_background.py
 
 Author: Iris Sammarco
 Date: 06/03/2026
 Aim: Build a KEGG background file for pathway enrichment analysis by extracting KEGG KO identifiers from EggNOG annotations. Collapses isoforms to gene level and removes entries with missing or uninformative KEGG annotations.
-Run: python3 trinotate_11_kegg_background.py  (edit INPUT_FILE first)
-Input:  Festuca_rubra_annotation_report.extended.tsv  (step 09)
+Run: python3 trinotate_12_kegg_background.py  (edit INPUT_FILE first)
+Input:  Festuca_rubra_annotation_report.extended.tsv  (step 10)
 Output: Festuca_rubra_kegg_background.cleaned.tsv
 """
 
