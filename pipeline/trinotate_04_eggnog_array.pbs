@@ -44,12 +44,12 @@ echo "[INFO] Starting EggNOG chunk ${CHUNK_ID}"
 
 TEMP_OUT="${OUTFILE}.tmp" # Run with temp output to avoid contention
 
+# Restrict EggNOG search to Viridiplantae (green plants) for more specific functional annotations
 emapper.py \
     --data_dir "${EGGNOG_DATA_DIR}" \
     -i "${PEP_CHUNK}" \
     --output "${TEMP_OUT}" \
     -m diamond \
-    # Restrict EggNOG search to Viridiplantae (green plants) for more specific functional annotations
     --tax_scope Viridiplantae \
     --cpu 4 \
     --override \
