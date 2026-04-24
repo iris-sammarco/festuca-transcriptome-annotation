@@ -8,8 +8,11 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: Run TMHMM transmembrane domain prediction.
+# Aim: Predict transmembrane helices in the TransDecoder-predicted proteome using TMHMM v2.
+# Requires Trinity.fasta.transdecoder.pep from step 03.
 # Run: qsub trinotate_04_tmhmm.bash
+# Input: Trinity.fasta.transdecoder.pep (step 03)
+# Output: tmhmm.out
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
