@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Run TransDecoder.Predict to identify likely coding ORFs, using Diamond BLASTP (from step 01) and Pfam hmmscan (from step 02) hits as supporting evidence.
 # Run: qsub trinotate_03_transdecoder.bash
 # Input: Trinity.fasta, blastp.sprot.outfmt6 (step 01), pfam.domtblout (step 02)
@@ -47,7 +47,7 @@ echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
 
-## Step 5: TransDecoder.Predict - Uses BLASTP + Pfam domtblout → BETTER ORFs (20-30% fewer false positives). Predicts which ORFs are likely to be coding
+## TransDecoder.Predict - Uses BLASTP + Pfam domtblout → BETTER ORFs (20-30% fewer false positives). Predicts which ORFs are likely to be coding
 if [[ ! -s "Trinity.fasta.transdecoder.pep" || ! -s ".transdecoder_predict.done" ]]; then
     echo "[INFO] TransDecoder.Predict..."
     rm -f Trinity.fasta.transdecoder.pep .transdecoder_predict.done
