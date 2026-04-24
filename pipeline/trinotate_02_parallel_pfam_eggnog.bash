@@ -26,7 +26,6 @@ N_CHUNKS=$2
 MERGE_ONLY=${3:-}
 OUTDIR="/path/to/project/assembly/trinotate_output"
 PEP_LONG="${OUTDIR}/Trinity.fasta.transdecoder_dir/longest_orfs.pep"
-PFAM_HMM="/path/to/project/assembly/trinotate_data/Pfam-A.hmm"
 
 cd "${OUTDIR}"
 
