@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 """
 trinotate_09_merge_annotations.py
-Merge Trinotate, EggNOG, and Rfam annotation sources into one extended TSV.
+
+Author: Iris Sammarco
+Date: 03/2026
+Aim: Merge the Trinotate annotation report with EggNOG and Rfam results into a single extended TSV. EggNOG hits are filtered (E-value < 1e-10, best hit per transcript, uninformative descriptions removed). Rfam hits require no extra filtering as --cut_ga was applied during cmscan (step trinotate_IND_rfam.bash). Both best-hit and all-hits Rfam columns are added.
+Run: python3 trinotate_09_merge_annotations.py  (edit BASE_DIR first, consider running within the PBS queing system)
+Input:  Festuca_rubra.annotation_report_strict.xls  (step 08)
+        eggnog.emapper.annotations  (step 02, EggNOG)
+        rfam.tblout  (independent step, Rfam)
+Output: Festuca_rubra_annotation_report.extended.tsv
 """
 
 import pandas as pd
