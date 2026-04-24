@@ -12,7 +12,7 @@
 # Run: qsub trinotate_01_longorfs_blastp.bash
 # Input: Trinity_output.Trinity.fasta, uniprot_sprot.pep
 # Output: Trinity.fasta.gene_trans_map
-#         Trinity.fasta.transdecoder_dir/longest_orfs.pep
+#         Trinity.fasta.transdecoder_dir/longest_orfs.pep (input for Pfam, step 02)
 #         blastp.sprot.outfmt6
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
