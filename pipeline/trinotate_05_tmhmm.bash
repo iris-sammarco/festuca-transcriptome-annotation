@@ -9,7 +9,6 @@
 # Author: Iris Sammarco
 # Date: 03/2026
 # Aim: Predict transmembrane helices in the TransDecoder-predicted proteome using TMHMM v2.
-# Requires Trinity.fasta.transdecoder.pep from step 03.
 # Run: qsub trinotate_05_tmhmm.bash
 # Input: Trinity.fasta.transdecoder.pep (step 03)
 # Output: tmhmm.out
