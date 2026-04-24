@@ -15,6 +15,7 @@
 #         Trinity.fasta.transdecoder.bed
 #         Trinity.fasta.transdecoder.gff3
 #         Trinity.fasta.transdecoder.cdna
+# EggNOG must be run after this script completes, since Trinity.fasta.transdecoder.pep is generated here
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
