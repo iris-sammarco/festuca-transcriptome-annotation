@@ -33,16 +33,14 @@ ASSEMBLY="/path/to/project/assembly/Trinity_output.Trinity.fasta"
 PREFIX="Festuca_rubra"
 OUTDIR="/path/to/project/assembly/trinotate_output"
 LOGDIR="${OUTDIR}/logs"
-THREADS=28
 EVAL="1e-5"
-MAX_TARGETS=5
 
 cd "${OUTDIR}"
 
 # Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
-echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
+echo "[INFO] Job ${PBS_JOBID} started in ${PWD}
 
 ## Sanity checks (fail-fast)
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
