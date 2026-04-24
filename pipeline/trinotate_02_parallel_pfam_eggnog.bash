@@ -21,11 +21,6 @@ if [[ $# -lt 2 || $# -gt 3 ]]; then
     exit 1
 fi
 
-export TMPDIR=$SCRATCHDIR
-module add mambaforge
-export CONDA_ENVS_PATH=/path/to/conda/envs
-mamba activate trinotate_env
-
 STEP=$1
 N_CHUNKS=$2
 MERGE_ONLY=${3:-}
@@ -66,7 +61,7 @@ if [[ -z "${MERGE_ONLY}" ]]; then
         echo "[INFO] Creating new chunks in ${SPLIT_DIR}"
         rm -rf "${SPLIT_DIR}"
         mkdir -p "${SPLIT_DIR}"
-        seqkit split2 -s 10000 "${INPUT_FILE}" -o "${SPLIT_DIR}" --by-size-prefix "chunk_${STEP}_"
+        seqkit split2 -s 10000 "${INPUT_FILE}" -o "${SPLIT_DIR}" --by-size-prefix "chunk_${STEP}_" # 10,000 sequences per chunk; for ~1.4M longest_orfs.pep this gives ~141 chunks; for ~720k transdecoder.pep ~72 chunks
     fi
 	
 	# 2. Count & verify chunks 
@@ -90,7 +85,7 @@ elif [[ "${MERGE_ONLY}" == "m" ]]; then
         echo "[INFO] ${OUTPUT} already merged, skipping"
         exit 0
     fi
-    
+    # Pfam uses longest_orfs.pep (pre-TransDecoder.Predict); EggNOG uses transdecoder.pep (post-TransDecoder.Predict, smaller)
     case "${STEP}" in
         pfam)
             # Merge domtblout (HMMER3: 22-line header from first file only)
@@ -102,7 +97,7 @@ elif [[ "${MERGE_ONLY}" == "m" ]]; then
                     cat "$f" >> "${OUTPUT}"  # Header + data
                     FIRST=0
                 else
-                    tail -n +23 "$f" >> "${OUTPUT}"  # Skip 22-line header
+                    tail -n +23 "$f" >> "${OUTPUT}"  # HMMER3 domtblout: 3 header lines + statistical summary block = skip first 22 lines from chunks 2+
                 fi
             done
             [[ -s "${OUTPUT}" ]] && touch ".${STEP}.merged.done"
@@ -115,7 +110,7 @@ elif [[ "${MERGE_ONLY}" == "m" ]]; then
             for f in "${SPLIT_DIR}"/chunk_${STEP}_*.emapper.annotations; do
                 [[ -s "$f" ]] || continue
                 if [[ $FIRST -eq 1 ]]; then
-                    head -5 "$f" > "${OUTPUT}"  # 5-line header
+                    head -5 "$f" > "${OUTPUT}"  # EggNOG emapper output: 4 comment lines + 1 column header = keep only from first chunk
                     tail -n +6 "$f" >> "${OUTPUT}"  # Data only
                     FIRST=0
                 else
