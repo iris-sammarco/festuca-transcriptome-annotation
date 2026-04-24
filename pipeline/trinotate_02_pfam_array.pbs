@@ -14,14 +14,14 @@
 # Input: Trinity.fasta.transdecoder_dir/longest_orfs.pep.split/chunk_pfam_NNN.pep
 # Output: Trinity.fasta.transdecoder_dir/longest_orfs.pep.split/chunk_pfam_NNN.domtblout
 
+set -euo pipefail
+
 export PBS_ARRAY_INDEX=${PBS_ARRAY_INDEX:-1}
 export PBS_O_WORKDIR=${PBS_O_WORKDIR:-$(pwd)}
 # Debug log to verify array index is passed correctly; can be removed after validation
 echo "DEBUG: PBS_ARRAY_INDEX='${PBS_ARRAY_INDEX}' PBS_ARRAYID='${PBS_ARRAYID:-unset}'" >> logs/pbs_debug_${PBS_ARRAY_INDEX}.txt
 #trap 'echo "[ERROR] ArrayID=${PBS_ARRAYID} failed on $(date)" >&2; exit 1' ERR
 trap 'echo "[ERROR] ArrayID=${PBS_ARRAY_INDEX} failed on $(date)" >&2; exit 1' ERR # Metacentrum uses PBS_ARRAY_INDEX
-
-set -euo pipefail
 
 export TMPDIR=$SCRATCHDIR
 module add mambaforge
