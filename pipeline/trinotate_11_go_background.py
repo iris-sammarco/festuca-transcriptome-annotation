@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-trinotate_10_go_background.py
+trinotate_11_go_background.py
 
 Author: Iris Sammarco
 Date: 03/2026
