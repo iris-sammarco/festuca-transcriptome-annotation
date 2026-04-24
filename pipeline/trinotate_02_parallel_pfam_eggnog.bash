@@ -1,35 +1,17 @@
 #!/bin/bash
 
-# parallel_trinotate_steps.bash - Split FASTA -> PBS array jobs -> merge outputs for Pfam/EggNOG
-## NO QSUB for Master Script!
-# Usage: bash trinotate_02_parallel_pfam_eggnog.bash pfam 141    # split+submit
-#        bash trinotate_02_parallel_pfam_eggnog.bash pfam 141 m # merges the chunks, creates pfam.domtblout
-#        bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72 # split+submit
-#        bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72 m  # merges the chunks, creates eggnog.emapper.annotations
-
-# =============================================================================
-# trinotate_02_parallel_pfam_eggnog.bash - Parallel Trinotate Pfam/EggNOG Analysis
-# =============================================================================
-# AUTHOR: Iris Sammarco
-#
-# DATE: 25/03/2026
-#
-# PURPOSE:
-#   Splits large TransDecoder peptide FASTA files into chunks and submits PBS array jobs for parallel Pfam domain search (hmmscan) or EggNOG annotation.
-#   Includes merge step to combine chunked outputs into final annotation files.
-#
-# USAGE:
-#   1. SPLIT + SUBMIT (creates chunks, submits PBS array):
-#      bash trinotate_02_parallel_pfam_eggnog.bash pfam 141      # 141 Pfam chunks
-#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 141    # 141 EggNOG chunks
-#
-#   2. MERGE ONLY (after jobs complete):
-#      bash trinotate_02_parallel_pfam_eggnog.bash pfam 141 m    # Merge Pfam -> pfam.domtblout
-#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 141 m  # Merge EggNOG -> eggnog.emapper.annotations
-#
-# ARRAY SCRIPTS CALLED:
-#   trinotate_02_pfam_array.pbs
-#   trinotate_02_eggnog_array.pbs
+# Author: Iris Sammarco
+# Date: 06/03/2026
+# Aim: Master (non-qsub) script to split a large TransDecoder peptide FASTA into chunks and submit PBS array jobs for parallel Pfam domain search (hmmscan) or EggNOG annotation (emapper.py). Includes a merge mode to concatenate chunked outputs.
+# Calls: trinotate_02_pfam_array.pbs or trinotate_02_eggnog_array.pbs
+# Run: bash trinotate_02_parallel_pfam_eggnog.bash pfam 141      # split + submit
+#      bash trinotate_02_parallel_pfam_eggnog.bash pfam 141 m    # merge chunks
+#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72     # split + submit
+#      bash trinotate_02_parallel_pfam_eggnog.bash eggnog 72 m   # merge chunks
+# Input: Trinity.fasta.transdecoder_dir/longest_orfs.pep (pfam)
+#        Trinity.fasta.transdecoder.pep (eggnog)
+# Output: pfam.domtblout (merged Pfam domain table)
+#         eggnog.emapper.annotations (merged EggNOG annotations)
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
