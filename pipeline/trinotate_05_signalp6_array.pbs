@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: PBS array job to run SignalP v6 (fast mode, eukarya) on one FASTA chunk of the TransDecoder predicted proteome. Called by trinotate_05_parallel_signalp6.bash.
 # Do NOT submit directly — use the master script.
 # Run: Called automatically by trinotate_05_parallel_signalp6.bash (qsub -J array)
