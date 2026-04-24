@@ -55,7 +55,7 @@ ln -sf "${ASSEMBLY}" Trinity.fasta
 
 echo "[INFO] Rfam-only job started $(date)"
 
-## Step 4C: Infernal cmscan Rfam for ncRNAs
+## Infernal cmscan Rfam for ncRNAs
 RFAM_CM="${TRINOTATE_DATA_DIR}/Rfam.cm"
 if [[ ! -s "rfam.tblout" || ! -s ".rfam.done" ]]; then
 	# Calculate Z:
