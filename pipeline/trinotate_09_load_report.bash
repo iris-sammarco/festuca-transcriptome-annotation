@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -l walltime=500:00:0
+#PBS -l walltime=50:00:0
 #PBS -q default@pbs-m1.metacentrum.cz
 #PBS -l select=1:ncpus=2:mem=10gb:scratch_local=50gb
 #PBS -N trinotate_load
