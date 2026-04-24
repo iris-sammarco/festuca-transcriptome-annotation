@@ -2,7 +2,6 @@
 #PBS -l walltime=100:00:00
 #PBS -q default@pbs-m1.metacentrum.cz
 #PBS -l select=1:ncpus=4:mem=10gb:scratch_local=200gb
-#PBS -J 1-141
 #PBS -N pfam_chunk
 #PBS -j oe
 
