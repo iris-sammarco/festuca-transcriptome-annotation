@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Date: 03/2026
 # Author: Iris Sammarco
 # Aim: Setup guide for the Festuca rubra transcriptome annotation pipeline using Trinotate. 
