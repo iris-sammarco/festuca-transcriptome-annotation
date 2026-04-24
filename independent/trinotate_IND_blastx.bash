@@ -8,7 +8,7 @@
 
 # Author: Iris Sammarco
 # Date: 03/2026
-# Aim: Run Diamond BLASTX of the full Trinity transcriptome assembly against the SwissProt database. Position-independent — can be run at any time before the final load (step 08).
+# Aim: Run Diamond BLASTX of the full Trinity transcriptome assembly against the SwissProt database. Position-independent — can be run at any time before the final load (step 09).
 # Run: qsub trinotate_IND_blastx.bash
 # Input: Trinity_output.Trinity.fasta, uniprot_sprot.diamond (SwissProt Diamond DB)
 # Output: blastx.sprot.outfmt6
