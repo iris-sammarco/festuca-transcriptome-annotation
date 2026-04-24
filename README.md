@@ -47,18 +47,18 @@ All tools are installed via the `trinotate_env` conda environment except SignalP
 
 | Tool | Version used | Purpose |
 |------|-------------|---------|
-| Trinotate | 4.0.2 | Functional annotation framework |
-| TransDecoder | 5.7.1 | ORF prediction |
+| Trinotate | 3.2.2 | Functional annotation framework |
+| TransDecoder | 5.5.0 | ORF prediction |
 | Trinity | 2.8.5 | Transcriptome assembly (assembly pre-computed; used here for utility scripts) |
-| DIAMOND | 2.1.9 | Fast protein alignment (SwissProt, Rice, Wheat) |
+| DIAMOND | 2.0.15 | Fast protein alignment (SwissProt, Rice, Wheat) |
 | HMMER / hmmscan | 3.4 | Pfam domain search |
-| EggNOG-mapper | 2.1.12 | Orthology and functional annotation |
-| SignalP | 6.0 (fast model) | Signal peptide prediction |
+| EggNOG-mapper | 2.1.13 | Orthology and functional annotation |
+| SignalP | 6.0+h (fast model) | Signal peptide prediction |
 | TMHMM | 2.0c | Transmembrane topology prediction |
-| Infernal / cmscan | 1.1.5 | Rfam RNA family annotation |
-| seqkit | 2.8.2 | FASTA splitting for parallel jobs |
-| Python | 3.10 | Post-processing scripts (steps 10–12) |
-| pandas | 2.2.2 | Tabular data processing in Python scripts |
+| Infernal / cmscan | 1.1.4 | Rfam RNA family annotation |
+| seqkit | 2.13.0 | FASTA splitting for parallel jobs |
+| Python | 3.13.2 | Post-processing scripts (steps 10–12) |
+| pandas | 2.2.3 | Tabular data processing in Python scripts |
 
 > **EggNOG database:** emapperdb-5.0.2
 
@@ -68,7 +68,7 @@ All tools are installed via the `trinotate_env` conda environment except SignalP
 
 This repository accompanies the following manuscript (citation to be added upon publication):
 
-> Sammarco I. et al. (*in preparation*). Functional annotation of the *Festuca rubra* transcriptome.
+> 
 
 If you use this code before the manuscript is published, please cite this repository directly:
 
