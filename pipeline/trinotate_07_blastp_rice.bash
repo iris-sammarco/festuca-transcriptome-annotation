@@ -52,7 +52,7 @@ PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s "blastp.rice.outfmt6" || ! -s ".rice.done" ]]; then
     echo "[INFO] Rice proteome..."
     rm -f *.rice* .rice.done
-    wget -N --no-check-certificate \ "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/oryza_sativa/pep/Oryza_sativa.IRGSP-1.0.pep.all.fa.gz"
+    wget -N --no-check-certificate "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/oryza_sativa/pep/Oryza_sativa.IRGSP-1.0.pep.all.fa.gz"
     gunzip -f Oryza_sativa.IRGSP-1.0.pep.all.fa.gz
     #diamond makedb --in Oryza_sativa.IRGSP-1.0.pep.all.fa -d rice --threads ${THREADS}
     #diamond blastp --db rice.dmnd --query "${PEP_FINAL}" \
