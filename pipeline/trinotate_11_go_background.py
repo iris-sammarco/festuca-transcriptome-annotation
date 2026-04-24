@@ -6,8 +6,8 @@ trinotate_10_go_background.py
 Author: Iris Sammarco
 Date: 03/2026
 Aim: Build a GO background file for GO enrichment analysis by combining GO terms from BLASTX, BLASTP, Pfam, and EggNOG sources. Collapses transcript isoforms to gene level, merges GO terms per gene, and removes generic root GO terms (GO:0008150, GO:0003674, GO:0005575).
-Run: python3 trinotate_10_go_background.py  (edit INPUT_FILE first, consider running in the PBS queing system)
-Input:  Festuca_rubra_annotation_report.extended.tsv  (step 09)
+Run: python3 trinotate_11_go_background.py  (edit INPUT_FILE first, consider running in the PBS queing system)
+Input:  Festuca_rubra_annotation_report.extended.tsv  (step 10)
 Output: Festuca_rubra_go_background.tsv          (raw, transcript-level)
         Festuca_rubra_go_background.cleaned.tsv  (gene-level, generic GO terms removed)
 """
