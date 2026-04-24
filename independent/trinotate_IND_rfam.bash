@@ -62,9 +62,6 @@ if [[ ! -s "rfam.tblout" || ! -s ".rfam.done" ]]; then
     echo "[INFO] Calculating Z for accurate E-values..." # For cmscan, Z is the length of the current query sequence [nucleotides] multiplied by 2 (because both strands of the sequence are searched [in each model]) and multiplied again by the number of CMs [covariance models] in the target CM database.
 	# --Z = (total nucleotides in ALL Trinity.fasta × 2 strands) / 1,000,000 Mb
     TOTAL_NT=$(grep -v "^>" Trinity.fasta | awk '{total+=length($0)} END{print total+0}') # Remove headers and count number of nucleotides
-	TOTAL_MB=$(echo "${TOTAL_NT} * 2 / 1000000" | bc -l | awk '{printf "%.6f", $1}')
-	echo "[INFO] --Z ${TOTAL_MB}" # --Z 3182.349886
-	
 	TOTAL_MB=$(awk '/^>/ {if(seq) {total+=length(seq)}; seq=""} !/^>/ {seq=seq$0} END{if(seq) total+=length(seq); print (total*2)/1000000}' Trinity.fasta | awk '{printf "%.6f", $1}') # --Z 3182.349886
     echo "[INFO] --Z ${TOTAL_MB} (total Mb both strands)"
 
