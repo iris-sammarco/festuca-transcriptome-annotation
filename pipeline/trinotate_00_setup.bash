@@ -118,29 +118,29 @@ bash pipeline/trinotate_02_parallel_pfam_eggnog.bash pfam 141 m  # merge → pfa
 cd "${OUTDIR}"
 qsub pipeline/trinotate_03_transdecoder.bash
 
-# --- EggNOG annotation (requires Trinity.fasta.transdecoder.pep from step 03) ---
+# --- STEP 04 (parallel): EggNOG annotation (requires Trinity.fasta.transdecoder.pep from step 03) ---
 # Adjust N_CHUNKS to your dataset size (used 72 here: less than Pfam because Pfam rns on longest_orfs.pep which is larger; EggNOG runs on the final transdecoder.pep which is smaller after TransDecoder.Predict filtering).
 cd "${OUTDIR}"
-bash pipeline/trinotate_03_parallel_pfam_eggnog.bash eggnog 72    # split + submit
-bash pipeline/trinotate_03_parallel_pfam_eggnog.bash eggnog 72 m  # merge → eggnog.emapper.annotations
+bash pipeline/trinotate_02_parallel_pfam_eggnog.bash eggnog 72    # split + submit
+bash pipeline/trinotate_02_parallel_pfam_eggnog.bash eggnog 72 m  # merge → eggnog.emapper.annotations
 
 # --- STEP 05: Trinotate INIT + TMHMM ---
 cd "${OUTDIR}"
-qsub pipeline/trinotate_04_tmhmm.bash
+qsub pipeline/trinotate_05_tmhmm.bash
 
 # --- STEP 06 (parallel): SignalP6 ---
 cd "${OUTDIR}"
-bash pipeline/trinotate_05_parallel_signalp6.bash 72    # split + submit
-bash pipeline/trinotate_05_parallel_signalp6.bash 72 m  # merge after all jobs finish
+bash pipeline/trinotate_06_parallel_signalp6.bash 72    # split + submit
+bash pipeline/trinotate_06_parallel_signalp6.bash 72 m  # merge after all jobs finish
 
 # --- STEPS 07-08: Poaceae curation (Rice + Wheat BLASTP) ---
 cd "${OUTDIR}"
-qsub pipeline/trinotate_06_blastp_rice.bash
-qsub pipeline/trinotate_07_blastp_wheat.bash
+qsub pipeline/trinotate_07_blastp_rice.bash
+qsub pipeline/trinotate_08_blastp_wheat.bash
 
 # --- STEP 09: Load all results + generate Trinotate report ---
 cd "${OUTDIR}"
-qsub pipeline/trinotate_08_load_report.bash
+qsub pipeline/trinotate_09_load_report.bash
 
 # --- STEPS 10-12: Merge annotations, GO and KEGG background ---
 cd "${FINAL_DIR}"
@@ -153,9 +153,9 @@ cp -s "${OUTDIR}/rfam.tblout" .
 
 cd "${FINAL_DIR}"
 # Run in PBS if needed:
-python3 pipeline/trinotate_09_merge_annotations.py
-python3 pipeline/trinotate_10_go_background.py
-python3 pipeline/trinotate_11_kegg_background.py
+python3 pipeline/trinotate_10_merge_annotations.py
+python3 pipeline/trinotate_11_go_background.py
+python3 pipeline/trinotate_12_kegg_background.py
 
 # =============================================================================
 # POST-RUN: CLEAN UP REPORT + SANITY CHECKS
