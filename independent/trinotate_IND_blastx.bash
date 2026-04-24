@@ -7,10 +7,11 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
-# Aim: Run the BLASTX step independently from the main pipeline.
-#      This step is not position-dependent and can be run at any time before the final load (step 08).
+# Date: 03/2026
+# Aim: Run Diamond BLASTX of the full Trinity transcriptome assembly against the SwissProt database. Position-independent — can be run at any time before the final load (step 08).
 # Run: qsub trinotate_IND_blastx.bash
+# Input: Trinity_output.Trinity.fasta, uniprot_sprot.diamond (SwissProt Diamond DB)
+# Output: blastx.sprot.outfmt6
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
