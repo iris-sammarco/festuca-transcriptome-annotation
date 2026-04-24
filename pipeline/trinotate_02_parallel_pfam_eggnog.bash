@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Master (non-qsub) script to split a large TransDecoder peptide FASTA into chunks and submit PBS array jobs for parallel Pfam domain search (hmmscan) or EggNOG annotation (emapper.py). Includes a merge mode to concatenate chunked outputs.
 # Calls: trinotate_02_pfam_array.pbs or trinotate_02_eggnog_array.pbs
 # Run: bash trinotate_02_parallel_pfam_eggnog.bash pfam 141      # split + submit
