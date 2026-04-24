@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Run BLAST+ blastp against the Triticum aestivum (wheat, IWGSC) proteome for Poaceae-specific annotation curation.
 # Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 06 (rice).
 # Run: qsub trinotate_07_blastp_wheat.bash
@@ -47,7 +47,7 @@ echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
 
-## STEP 11: Wheat Curation based on their proteomes fasta files
+## Wheat Curation based on its proteome fasta file
 PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s "blastp.wheat.outfmt6" || ! -s ".wheat.done" ]]; then
     echo "[INFO] Wheat proteome..."
