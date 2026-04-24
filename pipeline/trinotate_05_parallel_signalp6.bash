@@ -1,8 +1,14 @@
 #!/bin/bash
 
-# Run with:
-# bash trinotate_05_parallel_signalp6.bash 72   # Submit chunks
-# bash trinotate_05_parallel_signalp6.bash 72 m # Merge and load after all jobs finish
+# Author: Iris Sammarco
+# Date: 06/03/2026
+# Aim: Master (non-qsub) script to split the TransDecoder predicted proteome into chunks and submit PBS array jobs for parallel signal peptide prediction with SignalP v6 (fast mode).
+# Includes a merge mode to concatenate and validate chunk outputs, with duplicate ID check.
+# Calls: trinotate_05_signalp6_array.pbs
+# Run: bash trinotate_05_parallel_signalp6.bash 72    # split + submit
+#      bash trinotate_05_parallel_signalp6.bash 72 m  # merge after all jobs finish
+# Input: Trinity.fasta.transdecoder.pep (step 03)
+# Output: signalp_output_parallel/signalp.merged.txt
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
