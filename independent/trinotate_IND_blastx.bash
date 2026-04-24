@@ -53,7 +53,7 @@ ln -sf "${ASSEMBLY}" Trinity.fasta
 
 echo "[INFO] BLASTX-only job started $(date)"
 
-## STEP 7: Diamond BLASTX (full transcripts vs SwissProt)
+## Diamond BLASTX (full transcripts vs SwissProt)
 if [[ ! -s "blastx.sprot.outfmt6" || ! -s ".blastx.done" ]]; then
     echo "[INFO] Diamond BLASTX..."
     rm -f blastx.sprot.outfmt6 .blastx.done
