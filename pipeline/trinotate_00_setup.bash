@@ -61,10 +61,9 @@ gunzip Pfam-A.hmm.gz
 export TRINITY_HOME=$(dirname $(dirname $(which Trinity))) || export TRINITY_HOME=${CONDA_PREFIX}
 export TRINOTATE_HOME=$(dirname $(which Trinotate))
 
-${TRINOTATE_HOME}/Build_Trinotate_Boilerplate_SQLite_db.pl Trinotate_new
+${TRINOTATE_HOME}/Build_Trinotate_Boilerplate_SQLite_db.pl Trinotate
 # Downloads ~2-5 GB (SwissProt/Pfam), takes 10-30 min.
-# The output name will be Trinotate.sqlite — rename the output files to:
-#   Trinotate.sqlite  Trinotate.TaxonomyIndex  Trinotate.UniprotIndex
+# The output name will be Trinotate.sqlite
 
 # -----------------------------------------------------------------------------
 # 4. SIGNALP v6
