@@ -45,7 +45,7 @@ mkdir -p logs
 [[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing chunk ${PEP_CHUNK}"; exit 1; }
 [[ -s "${PFAM_HMM}" ]] || { echo "[FATAL] Missing Pfam HMM"; exit 1; }
 
-# # Index HMM if needed. WARNING: race condition possible if multiple array jobs hit this simultaneously — safe because hmmpress is fast and idempotent
+# # Index HMM if needed
 [[ ! -s "${PFAM_HMM}.h3f" ]] && hmmpress "${PFAM_HMM}"
 
 # Run hmmscan
