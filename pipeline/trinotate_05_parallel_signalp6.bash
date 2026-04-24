@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Master (non-qsub) script to split the TransDecoder predicted proteome into chunks and submit PBS array jobs for parallel signal peptide prediction with SignalP v6 (fast mode).
 # Includes a merge mode to concatenate and validate chunk outputs, with duplicate ID check.
 # Calls: trinotate_05_signalp6_array.pbs
