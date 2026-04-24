@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Copy annotation files to scratch for speed, initialize a clean Trinotate SQLite DB, load all results (BlastX, BlastP SwissProt, BlastP rice, BlastP wheat, Pfam, TMHMM, SignalP), and export the Trinotate annotation report (E ≤ 1e-20, Pfam DGC cutoff).
 # Note: EggNOG and Rfam are NOT loaded here (unsupported in Trinotate 3.2.2); they are merged in step 09 (trinotate_09_merge_annotations.py).
 # Run: qsub trinotate_08_load_report.bash
@@ -56,7 +56,7 @@ cp -r ${OUTDIR}/signalp_output_parallel $SCRATCHDIR/
 
 cd $SCRATCHDIR
 
-# I'll init a clean database to avoid duplicate rows:
+# Init a clean database (Important: this step needs to be done only once to avoid duplicate rows):
 echo "[INFO] Initializing clean Trinotate DB..."
 
 Trinotate Trinotate.sqlite init \
