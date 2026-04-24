@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Download the Oryza sativa proteome from Ensembl Plants (release 62) and run BLAST+ blastp against it for Poaceae-specific annotation curation.
 # Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 07 (wheat).
 # Run: qsub trinotate_06_blastp_rice.bash
@@ -47,7 +47,7 @@ echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
 
-## STEP 11: Rice Curation based on their proteomes fasta files
+## Rice Curation based on its proteome fasta file
 PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s "blastp.rice.outfmt6" || ! -s ".rice.done" ]]; then
     echo "[INFO] Rice proteome..."
