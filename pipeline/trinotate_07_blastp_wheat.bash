@@ -8,8 +8,12 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: BLASTP against wheat proteome for Poaceae-specific annotation curation.
+# Aim: Run BLAST+ blastp against the Triticum aestivum (wheat, IWGSC) proteome for Poaceae-specific annotation curation.
+# Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 06 (rice).
 # Run: qsub trinotate_07_blastp_wheat.bash
+# Input: Trinity.fasta.transdecoder.pep (step 03)
+# Output: blastp.wheat.outfmt6
+#         wheat.p{hr,in,sq} (BLAST+ database files)
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
@@ -48,8 +52,8 @@ PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s "blastp.wheat.outfmt6" || ! -s ".wheat.done" ]]; then
     echo "[INFO] Wheat proteome..."
     rm -f *.wheat* .wheat.done
-    #wget -N --no-check-certificate \ "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/triticum_aestivum/pep/Triticum_aestivum.IWGSC.pep.all.fa.gz"
-    #gunzip -f Triticum_aestivum.IWGSC.pep.all.fa.gz
+    wget -N --no-check-certificate \ "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/triticum_aestivum/pep/Triticum_aestivum.IWGSC.pep.all.fa.gz"
+    gunzip -f Triticum_aestivum.IWGSC.pep.all.fa.gz
     #diamond makedb --in Triticum_aestivum.IWGSC.pep.all.fa -d wheat --threads ${THREADS}
     #diamond blastp --db wheat.dmnd --query "${PEP_FINAL}" \
     #    --out blastp.wheat.outfmt6 --evalue ${EVAL} --max-target-seqs ${MAX_TARGETS} --threads ${THREADS} --outfmt 6 \
