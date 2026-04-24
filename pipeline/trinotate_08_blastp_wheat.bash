@@ -9,8 +9,8 @@
 # Author: Iris Sammarco
 # Date: 03/2026
 # Aim: Run BLAST+ blastp against the Triticum aestivum (wheat, IWGSC) proteome for Poaceae-specific annotation curation.
-# Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 06 (rice).
-# Run: qsub trinotate_07_blastp_wheat.bash
+# Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 07 (rice).
+# Run: qsub trinotate_08_blastp_wheat.bash
 # Input: Trinity.fasta.transdecoder.pep (step 03)
 # Output: blastp.wheat.outfmt6
 #         wheat.p{hr,in,sq} (BLAST+ database files)
