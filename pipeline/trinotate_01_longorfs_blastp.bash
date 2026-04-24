@@ -33,7 +33,7 @@ ASSEMBLY="/path/to/project/assembly/Trinity_output.Trinity.fasta"
 PREFIX="Festuca_rubra"
 OUTDIR="/path/to/project/assembly/trinotate_output"
 LOGDIR="${OUTDIR}/logs"
-THREADS=38
+THREADS=28 # Must match ncpus in PBS header
 EVAL="1e-5"  # Strict Diamond E-value
 MAX_TARGETS=5  # Maximum number of target sequences to report alignments for (default=25)
 
