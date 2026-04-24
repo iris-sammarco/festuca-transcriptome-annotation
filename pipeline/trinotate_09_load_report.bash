@@ -89,7 +89,6 @@ touch .trinotate.loads.done
 echo "[INFO] LOAD completed $(date)"
 
 ## Report step
-#rm -f ${PREFIX}.annotation_report*.xls
 echo "[INFO] REPORT step started $(date)"
 
 Trinotate Trinotate.sqlite report -E 1e-20 \
