@@ -4,9 +4,9 @@
 # Date: 03/2026
 # Aim: Master (non-qsub) script to split the TransDecoder predicted proteome into chunks and submit PBS array jobs for parallel signal peptide prediction with SignalP v6 (fast mode).
 # Includes a merge mode to concatenate and validate chunk outputs, with duplicate ID check.
-# Calls: trinotate_05_signalp6_array.pbs
-# Run: bash trinotate_05_parallel_signalp6.bash 72    # split + submit
-#      bash trinotate_05_parallel_signalp6.bash 72 m  # merge after all jobs finish
+# Calls: trinotate_06_signalp6_array.pbs
+# Run: bash trinotate_06_parallel_signalp6.bash 72    # split + submit
+#      bash trinotate_06_parallel_signalp6.bash 72 m  # merge after all jobs finish
 # Input: Trinity.fasta.transdecoder.pep (step 03)
 # Output: signalp_output_parallel/signalp.merged.txt
 
@@ -30,7 +30,7 @@ OUTDIR="/path/to/project/assembly/trinotate_output"
 INPUT_FILE="${OUTDIR}/Trinity.fasta.transdecoder.pep"
 SPLIT_DIR="${OUTDIR}/Trinity.fasta.transdecoder.pep.split"
 PARALLEL_DIR="${OUTDIR}/signalp_output_parallel"
-PBS_SCRIPT="${OUTDIR}/trinotate_05_signalp6_array.pbs"
+PBS_SCRIPT="${OUTDIR}/trinotate_06_signalp6_array.pbs"
 
 cd "${OUTDIR}"
 
