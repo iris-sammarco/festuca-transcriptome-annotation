@@ -26,8 +26,8 @@ TMHMM_BIN=/path/to/project/tmhmm-2.0c/bin
 # -----------------------------------------------------------------------------
 module add mambaforge
 
-mamba create -n trinotate_env -c bioconda -c conda-forge -c eggnog-mapper \
-  trinotate transdecoder blast hmmer diamond sqlite trinity infernal seqkit \
+mamba create -n trinotate_env -c conda-forge -c bioconda \
+  trinotate transdecoder blast hmmer diamond sqlite trinity infernal seqkit eggnog-mapper \
   -y
 
 # -----------------------------------------------------------------------------
