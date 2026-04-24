@@ -10,6 +10,11 @@
 # Date: 06/03/2026
 # Aim: Run TransDecoder.Predict to identify likely coding ORFs, using Diamond BLASTP (from step 01) and Pfam hmmscan (from step 02) hits as supporting evidence.
 # Run: qsub trinotate_03_transdecoder.bash
+# Input: Trinity.fasta, blastp.sprot.outfmt6 (step 01), pfam.domtblout (step 02)
+# Output: Trinity.fasta.transdecoder.pep
+#         Trinity.fasta.transdecoder.bed
+#         Trinity.fasta.transdecoder.gff3
+#         Trinity.fasta.transdecoder.cdna
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
