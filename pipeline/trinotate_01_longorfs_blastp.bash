@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Generate the Trinity gene-to-transcript map, build the Diamond SwissProt database (if absent), extract candidate long ORFs with TransDecoder.LongOrfs, and run Diamond BLASTP against SwissProt to provide homology evidence for downstream ORF prediction (step 03).
 # Run: qsub trinotate_01_longorfs_blastp.bash
 # Input: Trinity_output.Trinity.fasta, uniprot_sprot.pep
