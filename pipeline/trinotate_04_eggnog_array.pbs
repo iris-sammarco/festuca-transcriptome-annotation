@@ -49,7 +49,8 @@ emapper.py \
     -i "${PEP_CHUNK}" \
     --output "${TEMP_OUT}" \
     -m diamond \
-    --tax_scope Viridiplantae \ # Restrict EggNOG search to Viridiplantae (green plants) for more specific functional annotations
+    # Restrict EggNOG search to Viridiplantae (green plants) for more specific functional annotations
+    --tax_scope Viridiplantae \
     --cpu 4 \
     --override \
     > "logs/eggnog_chunk_${CHUNK_ID}.log" 2>&1
