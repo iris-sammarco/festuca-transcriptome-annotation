@@ -8,8 +8,12 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: BLASTP against rice proteome for Poaceae-specific annotation curation.
+# Aim: Download the Oryza sativa proteome from Ensembl Plants (release 62) and run BLAST+ blastp against it for Poaceae-specific annotation curation.
+# Note: uses BLAST+ (not Diamond) as Trinotate 3.2.2 requires BLAST+ outfmt6 for LOAD_custom_blast. Can be run in parallel with step 07 (wheat).
 # Run: qsub trinotate_06_blastp_rice.bash
+# Input: Trinity.fasta.transdecoder.pep (step 03)
+# Output: blastp.rice.outfmt6
+#         rice.p{hr,in,sq} (BLAST+ database files)
 
 set -euo pipefail
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR
