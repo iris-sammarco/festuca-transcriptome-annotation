@@ -1,7 +1,14 @@
 # 02/03/2026
 # Author: Iris Sammarco
-# Purpose: annotate Festuca's assembled transcriptome with Trinotate.
-# This script is a setup and run guide — it is NOT meant to be executed as a whole.
+# Aim: Setup guide for the Festuca rubra transcriptome annotation pipeline using Trinotate.
+#      Covers: conda environment creation, EggNOG/Pfam-A/Trinotate database downloads,
+#      SignalP v6 and TMHMM v2 manual installation, and the full pipeline run order.
+#      This script is NOT meant to be executed as a whole — run each section manually.
+# Run: bash trinotate_00_setup.bash  (source sections manually as needed)
+# Output: trinotate_env conda environment
+#         ${TRINOTATE_DATA_DIR}/eggnog_data/ (EggNOG databases)
+#         ${TRINOTATE_DATA_DIR}/Pfam-A.hmm (Pfam HMM database)
+#         ${TRINOTATE_DATA_DIR}/Trinotate.sqlite (Trinotate boilerplate SQLite DB)
 
 # =============================================================================
 # USER CONFIGURATION — edit these before running anything
