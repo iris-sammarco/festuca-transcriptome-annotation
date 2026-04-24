@@ -52,7 +52,7 @@ PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s "blastp.wheat.outfmt6" || ! -s ".wheat.done" ]]; then
     echo "[INFO] Wheat proteome..."
     rm -f *.wheat* .wheat.done
-    wget -N --no-check-certificate \ "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/triticum_aestivum/pep/Triticum_aestivum.IWGSC.pep.all.fa.gz"
+    wget -N --no-check-certificate "https://ftp.ensemblgenomes.org/pub/plants/release-62/fasta/triticum_aestivum/pep/Triticum_aestivum.IWGSC.pep.all.fa.gz"
     gunzip -f Triticum_aestivum.IWGSC.pep.all.fa.gz
     #diamond makedb --in Triticum_aestivum.IWGSC.pep.all.fa -d wheat --threads ${THREADS}
     #diamond blastp --db wheat.dmnd --query "${PEP_FINAL}" \
