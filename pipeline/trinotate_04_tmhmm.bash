@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: Predict transmembrane helices in the TransDecoder-predicted proteome using TMHMM v2.
 # Requires Trinity.fasta.transdecoder.pep from step 03.
 # Run: qsub trinotate_04_tmhmm.bash
@@ -46,7 +46,7 @@ echo "[INFO] Job ${PBS_JOBID} started in ${PWD} | Threads: ${THREADS}"
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
 ln -sf "${ASSEMBLY}" Trinity.fasta
 
-## STEP 9: TMHMM - predict transmembrane domains
+## TMHMM - predict transmembrane domains
 PEP_FINAL="Trinity.fasta.transdecoder.pep"
 if [[ ! -s ".tmhmm.done" ]]; then
     echo "[INFO] TMHMM predictions..."
