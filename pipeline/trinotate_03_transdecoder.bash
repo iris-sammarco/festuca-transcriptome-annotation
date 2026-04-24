@@ -53,8 +53,8 @@ if [[ ! -s "Trinity.fasta.transdecoder.pep" || ! -s ".transdecoder_predict.done"
     echo "[INFO] TransDecoder.Predict..."
     rm -f Trinity.fasta.transdecoder.pep .transdecoder_predict.done
     TransDecoder.Predict -t Trinity.fasta \
-        --retain_blastp_hits blastp.sprot.outfmt6 \ # produced by step 01
-        --retain_pfam_hits pfam.domtblout \ # produced by step 02
+        --retain_blastp_hits blastp.sprot.outfmt6 \
+        --retain_pfam_hits pfam.domtblout \
         > "${LOGDIR}/transdecoder.predict.log" 2>&1
     touch .transdecoder_predict.done
 fi
