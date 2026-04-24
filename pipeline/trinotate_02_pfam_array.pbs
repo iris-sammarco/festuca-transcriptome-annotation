@@ -7,7 +7,7 @@
 #PBS -j oe
 
 # Author: Iris Sammarco
-# Date: 06/03/2026
+# Date: 03/2026
 # Aim: PBS array job to run hmmscan (Pfam-A) on one FASTA chunk of the TransDecoder long ORF peptide file. Called by trinotate_02_parallel_pfam_eggnog.bash.
 # Do NOT submit directly — use the master script.
 # Run: Called automatically by trinotate_02_parallel_pfam_eggnog.bash (qsub -J array)
