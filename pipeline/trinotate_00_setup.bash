@@ -26,12 +26,9 @@ TMHMM_BIN=/path/to/project/tmhmm-2.0c/bin
 # -----------------------------------------------------------------------------
 module add mambaforge
 
-mamba create -n trinotate_env -c bioconda -c conda-forge \
-  trinotate transdecoder blast hmmer diamond sqlite trinity infernal \
+mamba create -n trinotate_env -c bioconda -c conda-forge -c eggnog-mapper \
+  trinotate transdecoder blast hmmer diamond sqlite trinity infernal seqkit \
   -y
-
-mamba install -c bioconda eggnog-mapper -y # needed for improving the GO/KEGG annotations
-mamba install seqkit -y # needed to split the fasta files in several chunks in order to run Pfam in parallel
 
 # -----------------------------------------------------------------------------
 # 2. EGGNOG DATABASES
