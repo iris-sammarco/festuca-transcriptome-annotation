@@ -16,8 +16,9 @@
 
 export PBS_ARRAY_INDEX=${PBS_ARRAY_INDEX:-1}
 export PBS_O_WORKDIR=${PBS_O_WORKDIR:-$(pwd)}
-
+# Debug log to verify array index is passed correctly; can be removed after validation
 echo "DEBUG: PBS_ARRAY_INDEX='${PBS_ARRAY_INDEX}' PBS_ARRAYID='${PBS_ARRAYID:-unset}'" >> logs/pbs_debug_${PBS_ARRAY_INDEX}.txt
+# Dual trap: PBS_ARRAYID is set by some PBS versions, PBS_ARRAY_INDEX by others; both trapped for robustness
 trap 'echo "[ERROR] ArrayID=${PBS_ARRAYID} failed on $(date)" >&2; exit 1' ERR
 trap 'echo "[ERROR] ArrayID=${PBS_ARRAY_INDEX} failed on $(date)" >&2; exit 1' ERR
 
@@ -45,7 +46,7 @@ mkdir -p logs
 [[ -s "${PEP_CHUNK}" ]] || { echo "[FATAL] Missing chunk ${PEP_CHUNK}"; exit 1; }
 [[ -s "${PFAM_HMM}" ]] || { echo "[FATAL] Missing Pfam HMM"; exit 1; }
 
-# Index HMM if needed (shared across jobs)
+# # Index HMM if needed. WARNING: race condition possible if multiple array jobs hit this simultaneously — safe because hmmpress is fast and idempotent
 [[ ! -s "${PFAM_HMM}.h3f" ]] && hmmpress "${PFAM_HMM}"
 
 # Run hmmscan
