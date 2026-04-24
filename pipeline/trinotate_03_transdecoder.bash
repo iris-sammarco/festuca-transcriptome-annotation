@@ -14,7 +14,7 @@
 # Output: Trinity.fasta.transdecoder.pep
 #         Trinity.fasta.transdecoder.bed
 #         Trinity.fasta.transdecoder.gff3
-#         Trinity.fasta.transdecoder.cdna
+#         Trinity.fasta.transdecoder.cds
 # EggNOG must be run after this script completes, since Trinity.fasta.transdecoder.pep is generated here
 
 set -euo pipefail
@@ -30,17 +30,15 @@ export TRINOTATE_DATA_DIR="/path/to/project/assembly/trinotate_data"
 export EGGNOG_DATA_DIR="${TRINOTATE_DATA_DIR}/eggnog_data"
 
 ASSEMBLY="/path/to/project/assembly/Trinity_output.Trinity.fasta"
-PREFIX="Festuca_rubra"
 OUTDIR="/path/to/project/assembly/trinotate_output"
 LOGDIR="${OUTDIR}/logs"
-EVAL="1e-5"
 
 cd "${OUTDIR}"
 
 # Per script logs:
 exec 1> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.log")
 exec 2> >(tee -a "${LOGDIR}/${PBS_JOBNAME}.err")
-echo "[INFO] Job ${PBS_JOBID} started in ${PWD}
+echo "[INFO] Job ${PBS_JOBID} started in ${PWD}"
 
 ## Sanity checks (fail-fast)
 [[ -s "${ASSEMBLY}" ]] || { echo "[FATAL] Missing assembly: ${ASSEMBLY}"; exit 1; }
