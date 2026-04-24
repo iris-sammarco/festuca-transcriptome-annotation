@@ -6,6 +6,14 @@
 #PBS -N eggnog_chunk
 #PBS -j oe
 
+# Author: Iris Sammarco
+# Date: 06/03/2026
+# Aim: PBS array job to run EggNOG-mapper (emapper.py) on one FASTA chunk of the TransDecoder predicted peptide file. Called by trinotate_02_parallel_pfam_eggnog.bash.
+# Do NOT submit directly — use the master script.
+# Run: Called automatically by trinotate_02_parallel_pfam_eggnog.bash (qsub -J array)
+# Input: Trinity.fasta.transdecoder.pep.split/chunk_eggnog_NNN.pep
+# Output: Trinity.fasta.transdecoder.pep.split/chunk_eggnog_NNN.emapper.annotations
+
 set -euo pipefail
 trap 'echo "[ERROR] ArrayID=${P_ARRAYID} failed on $(date)" >&2; exit 1' ERR
 
