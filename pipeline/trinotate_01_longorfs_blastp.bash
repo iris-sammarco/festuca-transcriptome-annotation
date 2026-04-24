@@ -8,8 +8,12 @@
 
 # Author: Iris Sammarco
 # Date: 06/03/2026
-# Aim: Generate gene-to-transcript map, extract candidate long ORFs with TransDecoder.LongOrfs, and run Diamond BLASTP against SwissProt to provide homology evidence for ORF prediction.
+# Aim: Generate the Trinity gene-to-transcript map, build the Diamond SwissProt database (if absent), extract candidate long ORFs with TransDecoder.LongOrfs, and run Diamond BLASTP against SwissProt to provide homology evidence for downstream ORF prediction (step 03).
 # Run: qsub trinotate_01_longorfs_blastp.bash
+# Input: Trinity_output.Trinity.fasta, uniprot_sprot.pep
+# Output: Trinity.fasta.gene_trans_map
+#         Trinity.fasta.transdecoder_dir/longest_orfs.pep
+#         blastp.sprot.outfmt6
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 trap 'echo "[ERROR] Line $LINENO: ${BASH_COMMAND} failed on $(date)" >&2; exit 1' ERR # debug
