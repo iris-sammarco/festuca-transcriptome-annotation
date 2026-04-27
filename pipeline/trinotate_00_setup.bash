@@ -189,7 +189,7 @@ awk -F'\t' '$1!~"^#" {print $9}' Festuca_rubra_annotation_report_final.tsv | gre
 awk -F'\t' '$1!~"^#" {print $13}' Festuca_rubra_annotation_report_final.tsv | grep -v "^.$" | wc -l   # KEGG 416087, ~12%
 awk -F'\t' '$1!~"^#" {print $14}' Festuca_rubra_annotation_report_final.tsv | grep -v "^.$" | wc -l   # GO_BLASTX 260528, ~7%
 awk -F'\t' '$1!~"^#" {print $15}' Festuca_rubra_annotation_report_final.tsv | grep -v "^.$" | wc -l   # GO_BLASTP 194487, ~7%
-awk -F'\t' '$1!~"^#" {print $16}' Festuca_rubra_annotation_report_final.tsv | grep -v "^.$" | wc -l   # GO_Pfam 3549821
+awk -F'\t' '$16 != "." && $16 != "" {count++} END{print count}' Festuca_rubra_annotation_report_final.tsv # GO_Pfam 349240, ~10% of genes
 awk -F'\t' '$1!~"^#" {print $17}' Festuca_rubra_annotation_report_final.tsv | grep -v "^.$" | wc -l   # eggnog 3236549, ~91%
 awk -F'\t' '$1!~"^#" {print $10}' Festuca_rubra_annotation_report_final.tsv | grep -c "sigP"        # SignalP 710507, ~20%
 awk -F'\t' '$1!~"^#" {print $11}' Festuca_rubra_annotation_report_final.tsv | grep -c "ExpAA"       # TmHMM 96395, ~3% 
